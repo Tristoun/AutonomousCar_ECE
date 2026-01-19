@@ -42,7 +42,7 @@ enum states {
 
 // 1. Static Message Initialization (Run once)
 void init_point_cloud_msg() {
-    rosidl_runtime_c__String__assign(&cloud.header.frame_id, "lidar_frame");
+    rosidl_runtime_c__String__assign(&cloud.header.frame_id, "base_link");
     cloud.height = 1;
     cloud.is_bigendian = false;
     cloud.is_dense = true;
