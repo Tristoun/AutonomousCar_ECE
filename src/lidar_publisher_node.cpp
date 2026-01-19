@@ -1,4 +1,4 @@
-#include <Arduino.h>
+/*#include <Arduino.h>
 #include <WiFi.h>
 #include <micro_ros_platformio.h>
 #include <rcl/rcl.h>
@@ -219,4 +219,4 @@ void loop() {
             last_angle = current_angle;
         }
     }
-}
+}*/
