@@ -1,4 +1,4 @@
-#include <Wire.h>
+/*#include <Wire.h>
 #include <Arduino.h>
 const int MPU_ADDR = 0x68;  // I2C address of MPU6050
 
@@ -42,3 +42,4 @@ void loop() {
 
   delay(500);
 }
+*/

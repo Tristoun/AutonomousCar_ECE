@@ -1,4 +1,4 @@
-/*#include <Arduino.h>
+#include <Arduino.h>
 #include <vector>
 
 
@@ -91,4 +91,4 @@ std::vector<LidarPoint> getPoints() {
         }
     }
     return points;
-}*/
+}
