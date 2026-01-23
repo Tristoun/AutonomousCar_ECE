@@ -51,6 +51,14 @@ enum states {
   AGENT_DISCONNECTED
 } state;
 
+float gyro_bias_x = 0.0f;
+float gyro_bias_y = 0.0f;
+float gyro_bias_z = 0.0f;
+
+float accel_bias_x = 0.0f;
+float accel_bias_y = 0.0f;
+float accel_bias_z = 0.0f;
+
 // --- INITIALIZATION FUNCTIONS ---
 
 void init_imu_msg() {
@@ -106,16 +114,13 @@ void publish_imu() {
         imu_msg.header.stamp.sec = time_ns / 1000000000;
         imu_msg.header.stamp.nanosec = time_ns % 1000000000;
 
-        // 2. Convert Raw to Physical Units
-        // Accel: +/- 2g scale -> 16384 LSB/g. Multiply by 9.806 for m/s^2
-        imu_msg.linear_acceleration.x = (float)AcX / 16384.0f * 9.806f;
-        imu_msg.linear_acceleration.y = (float)AcY / 16384.0f * 9.806f;
-        imu_msg.linear_acceleration.z = (float)AcZ / 16384.0f * 9.806f;
+        imu_msg.linear_acceleration.x = ((float)AcX - accel_bias_x) / 16384.0f * 9.806f;
+        imu_msg.linear_acceleration.y = ((float)AcY - accel_bias_y) / 16384.0f * 9.806f;
+        imu_msg.linear_acceleration.z = ((float)AcZ - accel_bias_z) / 16384.0f * 9.806f;
 
-        // Gyro: +/- 250 deg/s scale -> 131 LSB/deg/s. Convert to rad/s
-        imu_msg.angular_velocity.x = (float)GyX / 131.0f * (PI / 180.0f);
-        imu_msg.angular_velocity.y = (float)GyY / 131.0f * (PI / 180.0f);
-        imu_msg.angular_velocity.z = (float)GyZ / 131.0f * (PI / 180.0f);
+        imu_msg.angular_velocity.x = ((float)GyX - gyro_bias_x) / 131.0f * (PI / 180.0f);
+        imu_msg.angular_velocity.y = ((float)GyY - gyro_bias_y) / 131.0f * (PI / 180.0f);
+        imu_msg.angular_velocity.z = ((float)GyZ - gyro_bias_z) / 131.0f * (PI / 180.0f);
 
         rcl_publish(&imu_pub, &imu_msg, NULL);
     }
@@ -162,6 +167,79 @@ void destroy_entities() {
     rclc_support_fini(&support);
 }
 
+void configure_mpu6050() {
+    // Wake up MPU6050
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x6B);   // PWR_MGMT_1
+    Wire.write(0x00);   // Wake up
+    Wire.endTransmission();
+    delay(100);
+
+    // Set Gyro full scale ±250 deg/s
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x1B);   // GYRO_CONFIG
+    Wire.write(0x00);
+    Wire.endTransmission();
+
+    // Set Accel full scale ±2g
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x1C);   // ACCEL_CONFIG
+    Wire.write(0x00);
+    Wire.endTransmission();
+
+    // Set Digital Low Pass Filter (~42Hz)
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x1A);   // CONFIG
+    Wire.write(0x03);
+    Wire.endTransmission();
+
+    Serial.println("MPU6050 configured");
+}
+
+void calibrate_mpu6050(int samples = 500) {
+    long acc_x = 0, acc_y = 0, acc_z = 0;
+    long gyr_x = 0, gyr_y = 0, gyr_z = 0;
+
+    Serial.println("Calibrating MPU6050...");
+    Serial.println("DO NOT MOVE THE SENSOR");
+
+    for (int i = 0; i < samples; i++) {
+        Wire.beginTransmission(MPU_ADDR);
+        Wire.write(0x3B);
+        Wire.endTransmission(false);
+        Wire.requestFrom(MPU_ADDR, 14, true);
+
+        int16_t AcX = Wire.read() << 8 | Wire.read();
+        int16_t AcY = Wire.read() << 8 | Wire.read();
+        int16_t AcZ = Wire.read() << 8 | Wire.read();
+        Wire.read(); Wire.read(); // Temp
+        int16_t GyX = Wire.read() << 8 | Wire.read();
+        int16_t GyY = Wire.read() << 8 | Wire.read();
+        int16_t GyZ = Wire.read() << 8 | Wire.read();
+
+        acc_x += AcX;
+        acc_y += AcY;
+        acc_z += AcZ - 16384; // Remove gravity (1g)
+
+        gyr_x += GyX;
+        gyr_y += GyY;
+        gyr_z += GyZ;
+
+        delay(5);
+    }
+
+    accel_bias_x = (float)acc_x / samples;
+    accel_bias_y = (float)acc_y / samples;
+    accel_bias_z = (float)acc_z / samples;
+
+    gyro_bias_x = (float)gyr_x / samples;
+    gyro_bias_y = (float)gyr_y / samples;
+    gyro_bias_z = (float)gyr_z / samples;
+
+    Serial.println("Calibration complete");
+}
+
+
 // --- MAIN SETUP ---
 void setup() {
     Serial.begin(115200);
@@ -183,10 +261,8 @@ void setup() {
     // IMU Setup
     Wire.begin(4, 5);
     Wire.setClock(400000); // Set I2C to 400kHz for faster reads
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(0x6B);       // PWR_MGMT_1 register
-    Wire.write(0);          // Wake up
-    Wire.endTransmission();
+    configure_mpu6050();
+    calibrate_mpu6050();
 
     state = WAITING_AGENT;
 }
