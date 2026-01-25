@@ -10,18 +10,15 @@
 #include <rmw_microros/rmw_microros.h> 
 #include <Wire.h>
 
-// --- HEADER INCLUDES ---
-// Ensure this file exists in your src folder or include path
 #include "lidar_header.hpp"
 
-// --- CONFIGURATION ---
 const int MPU_ADDR = 0x68;  // I2C address of MPU6050
 #define WIFI_SSID "Arecetri"
 #define WIFI_PASSWORD "arece1234"
 #define AGENT_IP IPAddress(10, 150, 62, 183)
 #define AGENT_PORT 8888
 
-// --- ROS OBJECTS ---
+//ROS OBJECT
 rcl_node_t node;
 rclc_support_t support;
 rcl_allocator_t allocator;
@@ -35,12 +32,11 @@ sensor_msgs__msg__PointCloud2 cloud;
 rcl_publisher_t imu_pub;
 sensor_msgs__msg__Imu imu_msg;
 
-// --- MEMORY & BUFFERS ---
 #define MAX_POINTS 460 
 uint8_t cloud_data_buffer[MAX_POINTS * 16]; 
 sensor_msgs__msg__PointField field_buffer[4];
 
-// --- TIMING ---
+//Time
 unsigned long last_imu_time = 0;
 const unsigned long IMU_INTERVAL = 50; // 20Hz (50ms)
 
@@ -59,7 +55,6 @@ float accel_bias_x = 0.0f;
 float accel_bias_y = 0.0f;
 float accel_bias_z = 0.0f;
 
-// --- INITIALIZATION FUNCTIONS ---
 
 void init_imu_msg() {
     rosidl_runtime_c__String__assign(&imu_msg.header.frame_id, "imu_link");
@@ -81,7 +76,7 @@ void init_point_cloud_msg() {
 
     // Define Fields: x, y, z, intensity
     rosidl_runtime_c__String__assign(&cloud.fields.data[0].name, "x");
-    cloud.fields.data[0].offset = 0; cloud.fields.data[0].datatype = 7; cloud.fields.data[0].count = 1;
+    cloud.fields.data[0].offset = 0; cloud.fields.data[0].datatype = 7; cloud.fields.data[0].count = 1; //datatype 7 = float we're reading every 4 bytes to send Lidar data 
     rosidl_runtime_c__String__assign(&cloud.fields.data[1].name, "y");
     cloud.fields.data[1].offset = 4; cloud.fields.data[1].datatype = 7; cloud.fields.data[1].count = 1;
     rosidl_runtime_c__String__assign(&cloud.fields.data[2].name, "z");
@@ -89,8 +84,6 @@ void init_point_cloud_msg() {
     rosidl_runtime_c__String__assign(&cloud.fields.data[3].name, "intensity");
     cloud.fields.data[3].offset = 12; cloud.fields.data[3].datatype = 7; cloud.fields.data[3].count = 1;
 }
-
-// --- DATA PROCESSING FUNCTIONS ---
 
 void publish_imu() {
     int16_t AcX, AcY, AcZ, GyX, GyY, GyZ;
@@ -109,7 +102,6 @@ void publish_imu() {
         GyY = Wire.read() << 8 | Wire.read();
         GyZ = Wire.read() << 8 | Wire.read();
 
-        // 1. Sync Time with ROS Agent
         int64_t time_ns = rmw_uros_epoch_nanos();
         imu_msg.header.stamp.sec = time_ns / 1000000000;
         imu_msg.header.stamp.nanosec = time_ns % 1000000000;
@@ -126,7 +118,6 @@ void publish_imu() {
     }
 }
 
-// --- LIFECYCLE MANAGEMENT ---
 
 bool create_entities() {
     allocator = rcl_get_default_allocator();
@@ -135,15 +126,15 @@ bool create_entities() {
     rclc_support_init(&support, 0, NULL, &allocator);
 
     // Init Node
-    if (rclc_node_init_default(&node, "esp32_lidar", "", &support) != RCL_RET_OK) return false;
+    if (rclc_node_init_default(&node, "esp32_node", "", &support) != RCL_RET_OK) return false;
 
     // Init Lidar Publisher
     if (rclc_publisher_init_default(&lidar_pub, &node, 
-        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, PointCloud2), "scan_cloud") != RCL_RET_OK) return false;
+        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, PointCloud2), "point_cloud") != RCL_RET_OK) return false;
 
     // Init IMU Publisher
     if (rclc_publisher_init_default(&imu_pub, &node, 
-        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu), "imu/data_raw") != RCL_RET_OK) return false;
+        ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu), "imu_data") != RCL_RET_OK) return false;
 
     // Init Executor (for background tasks)
     executor = rclc_executor_get_zero_initialized_executor();
@@ -153,7 +144,6 @@ bool create_entities() {
     init_point_cloud_msg();
     init_imu_msg();
 
-    // Sync Time
     rmw_uros_sync_session(1000);
 
     return true;
@@ -240,7 +230,6 @@ void calibrate_mpu6050(int samples = 500) {
 }
 
 
-// --- MAIN SETUP ---
 void setup() {
     Serial.begin(115200);
     
@@ -302,17 +291,16 @@ void loop() {
             // Handle micro-ROS background tasks
             rclc_executor_spin_some(&executor, RCL_MS_TO_NS(1));
 
-            // --- CHECK 1: Publish IMU (Priority Check) ---
+            // Publish IMU
             if (millis() - last_imu_time > IMU_INTERVAL) {
                 publish_imu();
                 last_imu_time = millis();
             }
 
-            // --- READ LIDAR STREAM ---
+            // Read lidar data
             while (Serial2.available() > 47) {
                 
-                // --- CHECK 2: Interleaved IMU Check ---
-                // Prevents Lidar stream from blocking IMU updates
+                //Send imu data if good timing
                 if (millis() - last_imu_time > IMU_INTERVAL) {
                     publish_imu();
                     last_imu_time = millis();
@@ -333,7 +321,7 @@ void loop() {
                 // Detect End of Scan (Angle wrap 360 -> 0)
                 if (current_angle < last_angle - 20000) {
                     
-                    // --- PUBLISH LIDAR CLOUD ---
+                    // Publish lidar data
                     int count = scanBuffer.size();
                     if (count > MAX_POINTS) count = MAX_POINTS;
 
