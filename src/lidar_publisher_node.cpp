@@ -11,6 +11,7 @@
 #include <Wire.h>
 
 #include "lidar_header.hpp"
+#include "motor_header.hpp"
 
 const int MPU_ADDR = 0x68;  // I2C address of MPU6050
 #define WIFI_SSID "Arecetri"
@@ -253,6 +254,28 @@ void setup() {
     configure_mpu6050();
     calibrate_mpu6050();
 
+    // Moteurs
+    pinMode(AIN1, OUTPUT);
+    pinMode(AIN2, OUTPUT);
+    pinMode(PWMA, OUTPUT);
+    pinMode(BIN1, OUTPUT);
+    pinMode(BIN2, OUTPUT);
+    pinMode(PWMB, OUTPUT);
+    
+    ledcSetup(channel_A, freq, resolution);
+    //Bind PWMA pin to A-channel  
+    ledcAttachPin(PWMA, channel_A);
+
+    ledcSetup(channel_B, freq, resolution);
+    ledcAttachPin(PWMB, channel_B);
+    
+    digitalWrite(AIN1, LOW);
+    digitalWrite(AIN2, LOW);
+    digitalWrite(BIN1, LOW);
+    digitalWrite(BIN2, LOW);
+    
+    Serial.println("✓ Motors initialized");
+
     state = WAITING_AGENT;
 }
 
@@ -264,6 +287,9 @@ void loop() {
     // ------------------------------------------------
     // STATE MACHINE
     // ------------------------------------------------
+    channel_A_Ctrl(100); //Cote gauche
+    channel_B_Ctrl(0); //Cote droit
+    Serial.print("MOTOR MOVING");
     switch (state) {
         case WAITING_AGENT:
             // "Knock on door" - Check if Agent is reachable
