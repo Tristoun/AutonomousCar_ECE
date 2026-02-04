@@ -15,7 +15,7 @@
 const int MPU_ADDR = 0x68;  // I2C address of MPU6050
 #define WIFI_SSID "Arecetri"
 #define WIFI_PASSWORD "arece1234"
-#define AGENT_IP IPAddress(10, 150, 62, 183)
+#define AGENT_IP IPAddress(10, 36, 21, 183)
 #define AGENT_PORT 8888
 
 //ROS OBJECT
@@ -232,7 +232,7 @@ void calibrate_mpu6050(int samples = 500) {
 
 void setup() {
     Serial.begin(115200);
-    
+    delay(2000);
     // Lidar Serial
     Serial2.setRxBufferSize(4096);
     Serial2.begin(230400, SERIAL_8N1, 16, 17);
@@ -278,6 +278,7 @@ void loop() {
             } else {
                 // Drain Lidar buffer while waiting
                 while(Serial2.available()) Serial2.read(); 
+                Serial.println(".");
             }
             break;
 
