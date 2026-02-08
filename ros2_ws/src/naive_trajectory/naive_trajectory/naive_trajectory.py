@@ -54,8 +54,8 @@ class MinimalTrajectory(Node):
         turn = np.clip(angle / np.pi, -1.0, 1.0)
         left = base_speed * (1.0 - turn)
         right = base_speed * (1.0 + turn)
-        left = int(np.clip(left, -255, 255))
-        right = int(np.clip(right, -255, 255))
+        left = int(np.clip(left, -100, 100))
+        right = int(np.clip(right, -100, 100))
         return left, right
 
     def occupancy_grid_to_points(self, grid):
