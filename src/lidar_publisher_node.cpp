@@ -8,6 +8,7 @@
 #include <sensor_msgs/msg/imu.h>
 #include <rosidl_runtime_c/string_functions.h>
 #include <rmw_microros/rmw_microros.h> 
+#include <std_msgs/msg/int16_multi_array.h>
 #include <Wire.h>
 #include <vector>
 
@@ -49,11 +50,13 @@ rcl_allocator_t allocator;
 rclc_executor_t executor;
 rcl_publisher_t lidar_pub;
 rcl_publisher_t imu_pub;
+rcl_subscription_t motor_sub;
 
 sensor_msgs__msg__PointCloud2 cloud;
 sensor_msgs__msg__Imu imu_msg;
 uint8_t cloud_data_buffer[MAX_POINTS * 16]; 
 sensor_msgs__msg__PointField field_buffer[4];
+std_msgs__msg__Int16MultiArray motor_msg;
 
 enum states { WAITING_AGENT, AGENT_CONNECTED, AGENT_DISCONNECTED } state; //State machine
 
@@ -127,23 +130,66 @@ void calibrate_mpu6050(int samples = 500) {
     gyro_bias_x = (float)gyr_x / samples; gyro_bias_y = (float)gyr_y / samples; gyro_bias_z = (float)gyr_z / samples;
 }
 
+void motor_pwm_callback(const void * msg_in) {
+    const std_msgs__msg__Int16MultiArray * msg = (const std_msgs__msg__Int16MultiArray *)msg_in;
+    if (msg->data.size < 2) return;  // Expect at least 2 elements: left, right
+
+    int left_pwm = msg->data.data[0];  // -255 -> 255
+    int right_pwm = msg->data.data[1]; // -255 -> 255
+
+    // Map the PWM values to motor driver function
+    channel_A_Ctrl(left_pwm);   // Left motor
+    channel_B_Ctrl(right_pwm);  // Right motor
+}
+
+
 bool create_entities() {
-    /*
-    * This part is dedicated to setup all boring stuffs from micro ros 
-    * Allocator, executor BUT we are creating also our two publishers (imu and lidar)
-    */
     allocator = rcl_get_default_allocator();
     rclc_support_init(&support, 0, NULL, &allocator);
+    
+    // Check node init
     if (rclc_node_init_default(&node, "esp32_node", "", &support) != RCL_RET_OK) return false;
+
+    // --- Publishers ---
     rclc_publisher_init_default(&lidar_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, PointCloud2), "point_cloud");
     rclc_publisher_init_default(&imu_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu), "imu_data");
+    
+    // --- Subscriber ---
+    rclc_subscription_init_default(
+        &motor_sub,
+        &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int16MultiArray),
+        "motor_pwm"
+    );
+
+    // --- CRITICAL FIX: Initialize Subscriber Message Memory ---
+    // We must provide a buffer for the executor to write the incoming data into.
+    // Since create_entities might be called multiple times (reconnections), 
+    // we use a static buffer to avoid memory leaks or re-allocation.
+    static int16_t motor_data_buffer[4]; // Buffer for up to 4 values (Left, Right, etc.)
+    motor_msg.data.capacity = 4;
+    motor_msg.data.data = motor_data_buffer;
+    motor_msg.data.size = 0;
+
+    // --- Executor ---
     executor = rclc_executor_get_zero_initialized_executor();
+    // Handles: 1 subscription. (Publishers don't count as handles in the executor)
     rclc_executor_init(&executor, &support.context, 1, &allocator);
+    
+    rclc_executor_add_subscription(
+        &executor,
+        &motor_sub,
+        &motor_msg,
+        &motor_pwm_callback,
+        ON_NEW_DATA
+    );
+
     init_point_cloud_msg();
     init_imu_msg();
     rmw_uros_sync_session(1000);
     return true;
 }
+
 
 void destroy_entities() {
     //Ending the ros2 node
@@ -169,10 +215,6 @@ void sensor_motor_task(void * pvParameters) {
     current_scan->count = 0;
 
     for (;;) {
-        // MOTOR DRIVING in pwm (for now seems not in the good way but fine)
-        channel_A_Ctrl(0); //Left (antenna behind) issue with back wheel
-        channel_B_Ctrl(0); //Right (antenna behind)
-
         // 2. IMU SAMPLING
         if (millis() - last_imu_time > IMU_INTERVAL) {
             imu_data_t imu_raw;
@@ -288,7 +330,7 @@ void microros_task(void * pvParameters) {
                     delete incoming_lidar; // Free memory allocated in Core 1
                 }
 
-                rclc_executor_spin_some(&executor, RCL_MS_TO_NS(1));
+                rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10));
                 break;
 
             case AGENT_DISCONNECTED:
