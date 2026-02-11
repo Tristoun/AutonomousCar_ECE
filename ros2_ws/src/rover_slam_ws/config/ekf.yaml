@@ -1,0 +1,30 @@
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0
+    sensor_timeout: 0.1
+    two_d_mode: true
+    publish_tf: true
+
+    map_frame: map              
+    odom_frame: odom            
+    base_link_frame: base_link  
+    world_frame: odom           
+
+    # Fusing RF2O Odometry (LiDAR)
+    odom0: /odom_rf2o
+    odom0_config: [true,  true,  false, # X, Y, Z
+                   false, false, true,  # Roll, Pitch, Yaw
+                   false, false, false, # VX, VY, VZ
+                   false, false, false, # Vroll, Vpitch, Vyaw
+                   false, false, false] # Ax, Ay, Az
+    odom0_relative: false
+
+    # Fusing IMU (ESP32)
+    imu0: /imu_data # Ensure your ESP32 topic matches this
+    imu0_config: [false, false, false,
+                  false, false, true,  # Just take Yaw/Rotation
+                  false, false, false,
+                  false, false, true,  # Angular Velocity
+                  true,  false, false] # Linear Acceleration (X)
+    imu0_relative: true
+    imu0_remove_gravitational_acceleration: true

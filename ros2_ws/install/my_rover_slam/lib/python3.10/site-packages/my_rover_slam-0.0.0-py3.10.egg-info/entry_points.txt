@@ -1,0 +1,2 @@
+[console_scripts]
+scan_time_fixer = my_rover_slam.scan_time_fixer:main

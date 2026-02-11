@@ -1,0 +1,15 @@
+slam_toolbox:
+  ros__parameters:
+    solver_plugin: solver_plugins::CeresSolver
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan
+    mode: mapping
+    map_update_interval: 0.5
+    resolution: 0.05
+    max_laser_range: 12.0
+    transform_publish_period: 0.05 # Publish map->odom faster
+    transform_timeout: 0.5         # Wait longer for TFs
+    minimum_time_interval: 0.1
+    lookup_transform_timeout_sec: 0.2
