@@ -20,6 +20,7 @@ const int MPU_ADDR = 0x68;
 #define WIFI_SSID "Arecetri"
 #define WIFI_PASSWORD "arece1234"
 #define AGENT_IP IPAddress(10, 36, 21, 183) //WARNING : set your computer IP ADDR
+
 #define AGENT_PORT 8888
 #define MAX_POINTS 460 
 
@@ -143,12 +144,12 @@ void motor_pwm_callback(const void * msg_in) {
 }
 
 
-bool create_entities() {
-    allocator = rcl_get_default_allocator();
-    rclc_support_init(&support, 0, NULL, &allocator);
-    
-    // Check node init
-    if (rclc_node_init_default(&node, "esp32_node", "", &support) != RCL_RET_OK) return false;
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    // Lidar Serial
+    Serial2.setRxBufferSize(4096);
+    Serial2.begin(230400, SERIAL_8N1, 16, 17);
 
     // --- Publishers ---
     rclc_publisher_init_default(&lidar_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, PointCloud2), "point_cloud");
@@ -261,6 +262,10 @@ void sensor_motor_task(void * pvParameters) {
                     current_scan->intensity[i] = (float)p.intensity();
                     current_scan->count++;
                 }
+            } else {
+                // Drain Lidar buffer while waiting
+                while(Serial2.available()) Serial2.read(); 
+                Serial.println(".");
             }
 
             if (current_angle < last_angle - 20000) {
