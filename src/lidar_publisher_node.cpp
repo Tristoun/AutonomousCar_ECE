@@ -71,7 +71,7 @@ void init_imu_msg() {
 }
 
 void init_point_cloud_msg() {
-    rosidl_runtime_c__String__assign(&cloud.header.frame_id, "base_link");
+    rosidl_runtime_c__String__assign(&cloud.header.frame_id, "laser_link");
     cloud.height = 1;
     cloud.is_bigendian = false;
     cloud.is_dense = true;

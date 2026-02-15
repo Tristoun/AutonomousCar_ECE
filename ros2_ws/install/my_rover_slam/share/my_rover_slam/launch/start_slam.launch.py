@@ -16,11 +16,12 @@ def generate_launch_description():
         # ),
 
         # 2. Static Transforms (Exactly 8 arguments)
+        # Change '--yaw', '0' par '--yaw', '3.14159'
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             arguments=['--x', '0.1', '--y', '0', '--z', '0.05', 
-                    '--yaw', '0', '--pitch', '0', '--roll', '0', 
+                    '--yaw', '3.14159', '--pitch', '0', '--roll', '0', 
                     '--frame-id', 'base_link', '--child-frame-id', 'laser_link']
         ),
         Node(

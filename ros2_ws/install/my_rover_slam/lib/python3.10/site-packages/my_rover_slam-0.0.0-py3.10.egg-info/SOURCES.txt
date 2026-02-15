@@ -8,6 +8,7 @@ setup.py
 ../../build/my_rover_slam/my_rover_slam.egg-info/requires.txt
 ../../build/my_rover_slam/my_rover_slam.egg-info/top_level.txt
 ../../build/my_rover_slam/my_rover_slam.egg-info/zip-safe
+config/ekf.yaml
 config/mapper_params_online_async.yaml
 config/pointcloud_to_laserscan.yaml
 launch/start_slam.launch.py

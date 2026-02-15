@@ -1,0 +1,29 @@
+[0.867s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/naive_trajectory': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/naive_trajectory build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/install.log --single-version-externally-managed install_data
+[1.081s] running egg_info
+[1.094s] writing ../../build/naive_trajectory/naive_trajectory.egg-info/PKG-INFO
+[1.096s] writing dependency_links to ../../build/naive_trajectory/naive_trajectory.egg-info/dependency_links.txt
+[1.096s] writing entry points to ../../build/naive_trajectory/naive_trajectory.egg-info/entry_points.txt
+[1.096s] writing requirements to ../../build/naive_trajectory/naive_trajectory.egg-info/requires.txt
+[1.096s] writing top-level names to ../../build/naive_trajectory/naive_trajectory.egg-info/top_level.txt
+[1.847s] writing manifest file '../../build/naive_trajectory/naive_trajectory.egg-info/SOURCES.txt'
+[1.847s] running build
+[1.847s] running build_py
+[1.847s] copying naive_trajectory/emulation.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build/lib/naive_trajectory
+[1.850s] copying naive_trajectory/naive_trajectory.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build/lib/naive_trajectory
+[1.850s] copying naive_trajectory/python_default.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build/lib/naive_trajectory
+[1.850s] copying naive_trajectory/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build/lib/naive_trajectory
+[1.850s] running install
+[1.850s] running install_lib
+[1.863s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build/lib/naive_trajectory/naive_trajectory.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory
+[1.863s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/naive_trajectory.py to naive_trajectory.cpython-310.pyc
+[1.865s] running install_data
+[1.865s] copying resource/naive_trajectory -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/share/ament_index/resource_index/packages
+[1.865s] copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/share/naive_trajectory
+[1.865s] running install_egg_info
+[1.878s] removing '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory-0.0.0-py3.10.egg-info' (and everything under it)
+[1.881s] Copying ../../build/naive_trajectory/naive_trajectory.egg-info to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory-0.0.0-py3.10.egg-info
+[1.881s] running install_scripts
+[1.997s] Installing emulation script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/naive_trajectory
+[1.997s] Installing naive_trajectory script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/naive_trajectory
+[2.000s] writing list of installed files to '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/install.log'
+[2.018s] Invoked command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/naive_trajectory' returned '0': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/naive_trajectory build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/install.log --single-version-externally-managed install_data
