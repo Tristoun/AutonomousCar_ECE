@@ -47,7 +47,7 @@ def generate_launch_description():
                 'angle_increment': 0.01745,
                 'scan_time': 0.1,
                 'range_min': 0.1,
-                'range_max': 12.0,
+                'range_max': 15.0,
                 'use_inf': True  # CRITICAL: Use True so values > 12m are handled correctly
             }],
             remappings=[('cloud_in', '/point_cloud'), ('scan', '/scan')]

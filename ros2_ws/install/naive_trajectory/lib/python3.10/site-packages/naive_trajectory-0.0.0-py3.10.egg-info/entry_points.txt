@@ -1,3 +1,4 @@
 [console_scripts]
 emulation = naive_trajectory.emulation:main
 naive_trajectory = naive_trajectory.naive_trajectory:main
+naive_trajectory2 = naive_trajectory.naive_trajectory2:main

@@ -9,5 +9,5 @@ pointcloud_to_laserscan_node:
     max_height: 0.5
     # Use a real number for range_max instead of relying on use_inf
     range_min: 0.1
-    range_max: 12.0
+    range_max: 15.0
     use_inf: true # Change to false to see if real numbers appear

@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+../build/control_foxglove/control_foxglove.egg-info/PKG-INFO
+../build/control_foxglove/control_foxglove.egg-info/SOURCES.txt
+../build/control_foxglove/control_foxglove.egg-info/dependency_links.txt
+../build/control_foxglove/control_foxglove.egg-info/entry_points.txt
+../build/control_foxglove/control_foxglove.egg-info/requires.txt
+../build/control_foxglove/control_foxglove.egg-info/top_level.txt
+../build/control_foxglove/control_foxglove.egg-info/zip-safe
+control_foxglove/__init__.py
+control_foxglove/control_foxglove.py
+resource/control_foxglove
+test/test_copyright.py
+test/test_flake8.py
+test/test_pep257.py

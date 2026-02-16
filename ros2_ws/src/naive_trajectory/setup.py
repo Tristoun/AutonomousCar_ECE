@@ -25,7 +25,9 @@ setup(
     entry_points={
         'console_scripts': [
             'naive_trajectory = naive_trajectory.naive_trajectory:main',
-            'emulation = naive_trajectory.emulation:main'
+            'emulation = naive_trajectory.emulation:main',
+            'naive_trajectory2 = naive_trajectory.naive_trajectory2:main',
+
         ],
     },
 )

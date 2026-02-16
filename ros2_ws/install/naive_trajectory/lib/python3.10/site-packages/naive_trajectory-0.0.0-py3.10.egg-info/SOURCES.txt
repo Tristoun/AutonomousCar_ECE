@@ -11,6 +11,7 @@ setup.py
 naive_trajectory/__init__.py
 naive_trajectory/emulation.py
 naive_trajectory/naive_trajectory.py
+naive_trajectory/naive_trajectory2.py
 naive_trajectory/python_default.py
 resource/naive_trajectory
 test/test_copyright.py

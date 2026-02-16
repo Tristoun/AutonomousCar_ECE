@@ -34,10 +34,10 @@ class AdaptiveCorridorFollower(Node):
         # ==================== NAVIGATION ====================
         self.LOOKAHEAD_DIST = 0.65  # Distance de lookahead (augmentée)
         self.MIN_LOOKAHEAD = 0.40   # Distance minimale en virage serré
-        self.MAX_LOOKAHEAD = 0.85   # Distance maximale en ligne droite
+        self.MAX_LOOKAHEAD = 0.70   # Distance maximale en ligne droite
         
-        self.SAFETY_RADIUS = 0.22   # Rayon de sécurité autour du point cible
-        self.EMERGENCY_DIST = 0.25  # Distance d'urgence
+        self.SAFETY_RADIUS = 0.35   # Rayon de sécurité autour du point cible
+        self.EMERGENCY_DIST = 0.5  # Distance d'urgence
         self.CORRIDOR_WIDTH_MIN = 0.5  # Largeur minimale de couloir acceptable
         
         # Scan parameters
@@ -47,7 +47,7 @@ class AdaptiveCorridorFollower(Node):
         
         # ==================== FOLLOW THE GAP ====================
         self.GAP_THRESHOLD = 0.35  # Distance minimale pour considérer un gap
-        self.GAP_MIN_WIDTH = 3  # Nombre minimal de rayons consécutifs libres
+        self.GAP_MIN_WIDTH = 2  # Réduit de 3 à 2 pour accepter plus de gaps
         self.CENTER_BIAS = 0.3  # Biais vers le centre (0-1)
         
         # ==================== FILTRAGE & STABILITÉ ====================
@@ -56,9 +56,9 @@ class AdaptiveCorridorFollower(Node):
         self.heading_history = deque(maxlen=5)  # Historique des directions
         
         self.WATCHDOG_TIMEOUT = 1.5
-        self.MAP_TIMEOUT = 3.0  # Timeout pour la carte (plus tolérant)
+        self.MAP_TIMEOUT = 1.0  # Timeout pour la carte (plus tolérant)
         self.STUCK_THRESHOLD = 0.05  # Vitesse linéaire minimale (m/s)
-        self.STUCK_TIME_LIMIT = 3.0  # Temps avant de considérer le robot bloqué
+        self.STUCK_TIME_LIMIT = 1.5  # Augmenté à 5s pour laisser le temps d'explorer
         
         # ==================== ÉTAT ====================
         self.map = None
@@ -69,7 +69,7 @@ class AdaptiveCorridorFollower(Node):
         self.last_position = None
         self.stuck_start_time = None
         self.no_gap_start_time = None  # Nouveau: temps quand aucun gap trouvé
-        self.observation_duration = 2.0  # Durée d'observation avant rotation (secondes)
+        self.observation_duration = 1.0  # Durée d'observation réduite (1 seconde)
         
         self.last_steering = 0.0
         self.last_steering_rate = 0.0
@@ -232,11 +232,11 @@ class AdaptiveCorridorFollower(Node):
         gap_start = 0
         
         for i, score in enumerate(gap_scores):
-            # CORRECTION: Un gap valide doit avoir un score positif (pas d'obstacles)
-            if score > 0.6 and not in_gap:
+            # Un gap valide peut avoir un score moins élevé pour éviter de paniquer
+            if score > 0.4 and not in_gap:  # Réduit de 0.6 à 0.4
                 in_gap = True
                 gap_start = i
-            elif score <= 0.6 and in_gap:
+            elif score <= 0.4 and in_gap:
                 gap_width = i - gap_start
                 if gap_width >= self.GAP_MIN_WIDTH:
                     gap_center = (gap_start + i - 1) / 2
@@ -272,6 +272,7 @@ class AdaptiveCorridorFollower(Node):
             # 1. Largeur du gap (plus large = mieux)
             # 2. Proximité avec l'axe central (CENTER_BIAS)
             # 3. Continuité avec la direction précédente
+            # 4. NOUVEAU: Bonus pour les directions proches de tout droit
             
             width_score = min(gap['width'] / 10.0, 1.0)
             center_score = 1.0 - abs(gap['angle']) / (scan_angle_rad/2)
@@ -282,11 +283,15 @@ class AdaptiveCorridorFollower(Node):
                 avg_prev = np.mean(self.heading_history)
                 continuity_score = math.exp(-abs(gap['angle'] - avg_prev) / 0.5)
             
-            # Score final pondéré
+            # NOUVEAU: Bonus pour avancer tout droit (évite les virages inutiles)
+            forward_bias = math.exp(-abs(gap['angle']) / 0.8)  # Fort bonus pour angle proche de 0
+            
+            # Score final pondéré avec biais vers l'avant
             total_score = (
-                width_score * 0.4 +
-                center_score * self.CENTER_BIAS +
-                continuity_score * (1.0 - self.CENTER_BIAS - 0.4)
+                width_score * 0.3 +
+                center_score * 0.2 +
+                continuity_score * 0.2 +
+                forward_bias * 0.3  # 30% du score pour favoriser l'avant
             )
             
             if total_score > best_score:
@@ -344,45 +349,44 @@ class AdaptiveCorridorFollower(Node):
         best_angle, gap_quality, gap_width = self.find_best_gap(rx, ry, real_heading)
         
         if best_angle is None:
-            # NOUVEAU COMPORTEMENT: Arrêt et observation avant de chercher
+            # NOUVEAU COMPORTEMENT: Exploration prudente au lieu de paniquer
             if self.no_gap_start_time is None:
                 self.no_gap_start_time = self.get_clock().now()
-                self.get_logger().warn("⏸️  AUCUN PASSAGE DÉTECTÉ - Arrêt et observation...")
-                self.stop_robot()
-                self.publish_markers(rx, ry, real_heading, 0.0, is_searching=True)
-                return
+                self.get_logger().warn("⏸️  Vision limitée - Mode exploration...")
             
-            # Attendre la période d'observation
             observation_elapsed = (self.get_clock().now() - self.no_gap_start_time).nanoseconds / 1e9
             
-            if observation_elapsed < self.observation_duration:
-                # On reste à l'arrêt pendant l'observation
-                self.get_logger().warn(
-                    f"🔍 Observation... {observation_elapsed:.1f}s / {self.observation_duration}s"
-                )
+            if observation_elapsed < 1.0:  # Réduit à 1 seconde
+                # Arrêt court pour stabiliser la carte
+                self.get_logger().warn(f"🔍 Stabilisation... {observation_elapsed:.1f}s")
                 self.stop_robot()
                 self.publish_markers(rx, ry, real_heading, 0.0, is_searching=True)
                 return
             else:
-                # Après observation, on commence la recherche active
-                self.get_logger().warn("🔄 Début de la recherche active (rotation)...")
-                self.execute_search_behavior()
-                self.publish_markers(rx, ry, real_heading, 0.0, is_searching=True)
+                # MODE EXPLORATION: Avance tout droit LENTEMENT pour mapper
+                self.get_logger().info("🐢 Mode exploration: avance prudemment pour mapper...")
+                self.publish_pwm(60, 60)  # Avance très lentement
+                self.publish_markers(rx, ry, real_heading, 0.0, gap_quality=0.2, gap_width=0)
                 return
         
         # Si on trouve un gap, on reset le timer d'observation
         self.no_gap_start_time = None
         
         # Vérification de la qualité du gap
-        if gap_quality < 0.3:
+        if gap_quality < 0.2:
             self.get_logger().warn(
-                f"⚠️  Qualité de passage très faible ({gap_quality:.2f}) - Ralentissement!"
+                f"⚠️  Qualité de passage très faible ({gap_quality:.2f}) - Mode prudent!"
             )
-            # On continue mais très prudemment
-            speed_penalty = 0.5
-        elif gap_quality < 0.5:
-            speed_penalty = 0.7
+            # Très prudent mais on continue quand même
+            speed_penalty = 0.6
+        elif gap_quality < 0.4:
+            # Qualité moyenne-basse, on ralentit modérément
+            speed_penalty = 0.75
+        elif gap_quality < 0.6:
+            # Qualité correcte
+            speed_penalty = 0.9
         else:
+            # Bonne qualité, vitesse normale
             speed_penalty = 1.0
         
         # DEBUG: Log de la direction choisie
@@ -471,9 +475,10 @@ class AdaptiveCorridorFollower(Node):
     
     def execute_unstuck_maneuver(self):
         """Manœuvre pour se dégager si bloqué"""
-        self.get_logger().warn("🔄 Exécution manœuvre de déblocage...")
-        # Recul puis rotation (respecte la limite de 110)
-        self.publish_pwm(-100, -100)
+        self.get_logger().warn("🔄 Robot bloqué - Tentative d'exploration latérale...")
+        # Essai de rotation douce pour trouver un passage
+        # (on ne recule plus immédiatement, on explore d'abord)
+        self.publish_pwm(-70, 70)
         self.stuck_start_time = None  # Reset
 
     # ==================== COMMANDES MOTEUR ====================
