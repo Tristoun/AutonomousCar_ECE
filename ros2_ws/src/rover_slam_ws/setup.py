@@ -11,10 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch',
-	    ['launch/start_slam.launch.py']),
-	('share/' + package_name + '/config',
-            ['config/pointcloud_to_laserscan.yaml',
-	     'config/mapper_params_online_async.yaml']),
+	    ['launch/start_slam.launch.py'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -30,6 +27,10 @@ setup(
     entry_points={
         'console_scripts': [
             'scan_time_fixer = my_rover_slam.scan_time_fixer:main',
+            'imu_odometry_node = my_rover_slam.imu_odometry_node:main',
+            'static_tf_publisher  = my_rover_slam.static_tf_publisher:main',
+            'wheel_odometry_node = my_rover_slam.wheel_odometry:main'
+
         ],
     },
 )

@@ -26,7 +26,7 @@ def generate_launch_description():
                     'odom_topic': '/odom_rf2o',
                     'base_frame_id': 'base_link',
                     'odom_frame_id': 'odom',
-                    'sensor_frame_id': 'laser_link',
+                    'sensor_frame_id': 'base_link',
                     'publish_tf': True,
                     # Use Best Effort to match the fixer node
                     'use_best_effort_qos': True 

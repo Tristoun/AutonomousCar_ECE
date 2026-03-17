@@ -1,0 +1,38 @@
+[0.800s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/naive_trajectory': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/naive_trajectory build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/naive_trajectory/install.log --single-version-externally-managed install_data
+[0.975s] Traceback (most recent call last):
+[0.975s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 927, in read_text
+[0.977s]     return self._path.joinpath(filename).read_text(encoding='utf-8')
+[0.977s]   File "/usr/lib/python3.10/pathlib.py", line 1134, in read_text
+[0.978s]     with self.open(mode='r', encoding=encoding, errors=errors) as f:
+[0.978s]   File "/usr/lib/python3.10/pathlib.py", line 1119, in open
+[0.979s]     return self._accessor.open(self, mode, buffering, encoding, errors,
+[0.979s] FileNotFoundError: [Errno 2] No such file or directory: '/home/tristan/.local/lib/python3.10/site-packages/tzdata-2025.2.dist-info/entry_points.txt'
+[0.979s] 
+[0.979s] During handling of the above exception, another exception occurred:
+[0.979s] 
+[0.979s] Traceback (most recent call last):
+[0.979s]   File "/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/naive_trajectory/setup.py", line 5, in <module>
+[0.979s]     setup(
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/__init__.py", line 104, in setup
+[0.979s]     return distutils.core.setup(**attrs)
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/_distutils/core.py", line 171, in setup
+[0.979s]     ok = dist.parse_command_line()
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/_distutils/dist.py", line 476, in parse_command_line
+[0.979s]     args = self._parse_command_opts(parser, args)
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/dist.py", line 869, in _parse_command_opts
+[0.979s]     nargs = _Distribution._parse_command_opts(self, parser, args)
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/_distutils/dist.py", line 535, in _parse_command_opts
+[0.979s]     cmd_class = self.get_command_class(command)
+[0.979s]   File "/home/tristan/.local/lib/python3.10/site-packages/setuptools/dist.py", line 712, in get_command_class
+[0.979s]     eps = metadata.entry_points(group='distutils.commands', name=command)
+[0.979s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 1021, in entry_points
+[0.979s]     return SelectableGroups.load(eps).select(**params)
+[0.979s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 459, in load
+[0.979s]     ordered = sorted(eps, key=by_group)
+[0.979s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 1019, in <genexpr>
+[0.979s]     dist.entry_points for dist in unique(distributions())
+[0.979s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 631, in entry_points
+[0.979s]     return EntryPoints._from_text_for(self.read_text('entry_points.txt'), self)
+[0.979s]   File "/usr/lib/python3.10/importlib/metadata/__init__.py", line 927, in read_text
+[0.980s]     return self._path.joinpath(filename).read_text(encoding='utf-8')
+[0.980s] KeyboardInterrupt

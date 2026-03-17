@@ -19,7 +19,7 @@ class AdaptiveCorridorFollower(Node):
         super().__init__("adaptive_corridor_follower")
         
         # ==================== CONFIGURATION ====================
-        self.HARDWARE_OFFSET = 3.14159
+        self.HARDWARE_OFFSET = 0.0
         
         # Vitesses adaptatives
         self.BASE_SPEED = 110
@@ -32,18 +32,19 @@ class AdaptiveCorridorFollower(Node):
         self.KD_STEERING = 15.0   # Gain dérivé pour amortir les oscillations
         
         # ==================== NAVIGATION ====================
-        self.LOOKAHEAD_DIST = 0.65  # Distance de lookahead (augmentée)
-        self.MIN_LOOKAHEAD = 0.40   # Distance minimale en virage serré
-        self.MAX_LOOKAHEAD = 0.85   # Distance maximale en ligne droite
+        self.LOOKAHEAD_DIST = 0.7  # Distance de lookahead (augmentée)
+        self.MIN_LOOKAHEAD = 0.5   # Distance minimale en virage serré
+        self.MAX_LOOKAHEAD = 0.7   # Distance maximale en ligne droite
         
-        self.SAFETY_RADIUS = 0.35   # AUGMENTÉ - Robot reste loin des murs
-        self.EMERGENCY_DIST = 0.5  # Distance d'urgence augmentée
-        self.CORRIDOR_WIDTH_MIN = 0.6  # Largeur minimale de couloir acceptable
+        self.SAFETY_RADIUS = 0.5   # AUGMENTÉ - Robot reste loin des murs
+        self.EMERGENCY_DIST = 0.6  # Distance d'urgence augmentée
+        self.CORRIDOR_WIDTH_MIN = 0.8  # Largeur minimale de couloir acceptable
         
         # Scan parameters
         self.SCAN_ANGLE = 150  # Degrés (scan total)
         self.SCAN_RESOLUTION = 41  # Nombre de rayons
-        self.SCAN_DISTANCES = [0.5, 0.7, 0.9]  # AUGMENTÉ - Voit plus loin pour éviter les murs
+        self.SCAN_DISTANCES = [0.3, 0.5, 0.7]  # Distances de scan multiples
+
         
         # ==================== FOLLOW THE GAP ====================
         self.GAP_THRESHOLD = 0.35  # Distance minimale pour considérer un gap
@@ -310,24 +311,24 @@ class AdaptiveCorridorFollower(Node):
         
         # Vérification 1: Map et Pose disponibles
         if self.map is None:
-            self.get_logger().warn("⏸️  Attente de la carte... ARRÊT")
+            self.get_logger().warn("Attente de la carte... ARRÊT")
             self.stop_robot()
             return
             
         if self.pose is None:
-            self.get_logger().warn("⏸️  Attente de la position... ARRÊT")
+            self.get_logger().warn("Attente de la position... ARRÊT")
             self.stop_robot()
             return
         
         # Vérification 2: Localisation périmée
         if self.is_localization_stale():
-            self.get_logger().error("🛑 Localisation perdue! ARRÊT COMPLET")
+            self.get_logger().error("Localisation perdue! ARRÊT COMPLET")
             self.stop_robot()
             return
         
         # Vérification 3: Carte périmée (SLAM peut avoir des problèmes)
         if self.is_map_stale():
-            self.get_logger().warn("⚠️  Carte non mise à jour depuis >3s... ARRÊT PRÉVENTIF")
+            self.get_logger().warn("Carte non mise à jour depuis >3s... ARRÊT PRÉVENTIF")
             self.stop_robot()
             return
         
@@ -339,7 +340,7 @@ class AdaptiveCorridorFollower(Node):
             if self.stuck_start_time is None:
                 self.stuck_start_time = self.get_clock().now()
             elif (self.get_clock().now() - self.stuck_start_time).nanoseconds / 1e9 > self.STUCK_TIME_LIMIT:
-                self.get_logger().warn("⚠️ Robot bloqué! Manœuvre d'urgence...")
+                self.get_logger().warn("Robot bloqué! Manœuvre d'urgence...")
                 self.execute_unstuck_maneuver()
                 return
         else:
@@ -352,19 +353,19 @@ class AdaptiveCorridorFollower(Node):
             # NOUVEAU COMPORTEMENT: Exploration prudente au lieu de paniquer
             if self.no_gap_start_time is None:
                 self.no_gap_start_time = self.get_clock().now()
-                self.get_logger().warn("⏸️  Vision limitée - Mode exploration...")
+                self.get_logger().warn("Vision limitée - Mode exploration...")
             
             observation_elapsed = (self.get_clock().now() - self.no_gap_start_time).nanoseconds / 1e9
             
             if observation_elapsed < 1.0:  # Réduit à 1 seconde
                 # Arrêt court pour stabiliser la carte
-                self.get_logger().warn(f"🔍 Stabilisation... {observation_elapsed:.1f}s")
+                self.get_logger().warn(f"Stabilisation... {observation_elapsed:.1f}s")
                 self.stop_robot()
                 self.publish_markers(rx, ry, real_heading, 0.0, is_searching=True)
                 return
             else:
                 # MODE EXPLORATION: Avance tout droit LENTEMENT pour mapper
-                self.get_logger().info("🐢 Mode exploration: avance prudemment pour mapper...")
+                self.get_logger().info("Mode exploration: avance prudemment pour mapper...")
                 self.publish_pwm(60, 60)  # Avance très lentement
                 self.publish_markers(rx, ry, real_heading, 0.0, gap_quality=0.2, gap_width=0)
                 return
@@ -375,7 +376,7 @@ class AdaptiveCorridorFollower(Node):
         # Vérification de la qualité du gap
         if gap_quality < 0.2:
             self.get_logger().warn(
-                f"⚠️  Qualité de passage très faible ({gap_quality:.2f}) - Mode prudent!"
+                f"Qualité de passage très faible ({gap_quality:.2f}) - Mode prudent!"
             )
             # Très prudent mais on continue quand même
             speed_penalty = 0.6
@@ -393,7 +394,7 @@ class AdaptiveCorridorFollower(Node):
         if self.get_clock().now().nanoseconds % 500_000_000 < 100_000_000:
             direction = "DROITE" if best_angle > 0 else "GAUCHE" if best_angle < 0 else "TOUT DROIT"
             self.get_logger().info(
-                f"🎯 Direction: {direction} ({math.degrees(best_angle):.1f}°) | "
+                f"Direction: {direction} ({math.degrees(best_angle):.1f}°) | "
                 f"Quality: {gap_quality:.2f} | Width: {gap_width}"
             )
         
@@ -438,7 +439,7 @@ class AdaptiveCorridorFollower(Node):
         # Logging périodique
         if self.get_clock().now().nanoseconds % 2_000_000_000 < 100_000_000:
             self.get_logger().info(
-                f"📊 Gap: {math.degrees(best_angle):.1f}° | "
+                f"Gap: {math.degrees(best_angle):.1f}° | "
                 f"Quality: {gap_quality:.2f} ({int(speed_penalty*100)}%) | "
                 f"Width: {gap_width} | "
                 f"Speed: {self.current_speed:.0f}"
@@ -467,6 +468,16 @@ class AdaptiveCorridorFollower(Node):
         left_clamped = int(np.clip(left, -110, 110))
         right_clamped = int(np.clip(right, -110, 110))
         
+        if(left_clamped < 100 and left_clamped > 0) :
+            left_clamped = 100
+        elif (left_clamped > -100 and left_clamped < 0) :
+            left_clamped = -100
+        
+        if(right_clamped < 100 and right_clamped > 0) :
+            right_clamped = 100
+        elif (right_clamped > -100 and right_clamped < 0) :
+            right_clamped = -100
+
         msg = Int16MultiArray(data=[left_clamped, right_clamped])
         self.motor_pub.publish(msg)
 
@@ -572,10 +583,10 @@ def main():
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.get_logger().info("🛑 Arrêt demandé par l'utilisateur")
+        node.get_logger().info("Arrêt demandé par l'utilisateur")
         node.stop_robot()
     finally:
-        node.get_logger().info(f"📊 Distance totale: {node.total_distance:.2f}m")
+        node.get_logger().info(f"Distance totale: {node.total_distance:.2f}m")
         node.destroy_node()
         rclpy.shutdown()
 

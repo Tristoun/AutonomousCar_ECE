@@ -3,7 +3,7 @@ slam_toolbox:
     solver_plugin: solver_plugins::CeresSolver
     odom_frame: odom
     map_frame: map
-    base_frame: base_link
+    base_frame: laser_link
     scan_topic: /scan
     mode: mapping
     map_update_interval: 0.05
@@ -13,3 +13,12 @@ slam_toolbox:
     transform_timeout: 0.5         # Wait longer for TFs
     minimum_time_interval: 0.1
     lookup_transform_timeout_sec: 0.2
+.
+
+
+
+
+
+
+
+

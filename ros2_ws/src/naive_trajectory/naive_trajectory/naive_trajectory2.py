@@ -19,7 +19,7 @@ class AdaptiveCorridorFollower(Node):
         super().__init__("adaptive_corridor_follower")
         
         # ==================== CONFIGURATION ====================
-        self.HARDWARE_OFFSET = 3.14159
+        self.HARDWARE_OFFSET = 0.0
         
         # Vitesses adaptatives
         self.BASE_SPEED = 110
@@ -32,18 +32,19 @@ class AdaptiveCorridorFollower(Node):
         self.KD_STEERING = 15.0   # Gain dérivé pour amortir les oscillations
         
         # ==================== NAVIGATION ====================
-        self.LOOKAHEAD_DIST = 0.65  # Distance de lookahead (augmentée)
-        self.MIN_LOOKAHEAD = 0.40   # Distance minimale en virage serré
-        self.MAX_LOOKAHEAD = 0.85   # Distance maximale en ligne droite
+        self.LOOKAHEAD_DIST = 0.7  # Distance de lookahead (augmentée)
+        self.MIN_LOOKAHEAD = 0.5   # Distance minimale en virage serré
+        self.MAX_LOOKAHEAD = 0.7   # Distance maximale en ligne droite
         
-        self.SAFETY_RADIUS = 0.35   # AUGMENTÉ - Robot reste loin des murs
-        self.EMERGENCY_DIST = 0.5  # Distance d'urgence augmentée
-        self.CORRIDOR_WIDTH_MIN = 0.6  # Largeur minimale de couloir acceptable
+        self.SAFETY_RADIUS = 0.5   # AUGMENTÉ - Robot reste loin des murs
+        self.EMERGENCY_DIST = 0.6  # Distance d'urgence augmentée
+        self.CORRIDOR_WIDTH_MIN = 0.8  # Largeur minimale de couloir acceptable
         
         # Scan parameters
         self.SCAN_ANGLE = 150  # Degrés (scan total)
         self.SCAN_RESOLUTION = 41  # Nombre de rayons
-        self.SCAN_DISTANCES = [0.5, 0.7, 0.9]  # AUGMENTÉ - Voit plus loin pour éviter les murs
+        self.SCAN_DISTANCES = [0.3, 0.5, 0.7]  # Distances de scan multiples
+
         
         # ==================== FOLLOW THE GAP ====================
         self.GAP_THRESHOLD = 0.35  # Distance minimale pour considérer un gap
@@ -467,6 +468,16 @@ class AdaptiveCorridorFollower(Node):
         left_clamped = int(np.clip(left, -110, 110))
         right_clamped = int(np.clip(right, -110, 110))
         
+        if(left_clamped < 100 and left_clamped > 0) :
+            left_clamped = 100
+        elif (left_clamped > -100 and left_clamped < 0) :
+            left_clamped = -100
+        
+        if(right_clamped < 100 and right_clamped > 0) :
+            right_clamped = 100
+        elif (right_clamped > -100 and right_clamped < 0) :
+            right_clamped = -100
+
         msg = Int16MultiArray(data=[left_clamped, right_clamped])
         self.motor_pub.publish(msg)
 

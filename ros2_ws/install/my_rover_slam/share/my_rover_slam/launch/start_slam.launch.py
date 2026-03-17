@@ -1,109 +1,68 @@
-import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from ament_index_python.packages import get_package_share_directory
+from launch.actions import TimerAction
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('my_rover_slam')
-    ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
-
     return LaunchDescription([
-        # 1. Foxglove Bridge
-        # Node(
-            # package='foxglove_bridge',
-            # executable='foxglove_bridge',
-            # parameters=[{'port': 8765, 'address': '0.0.0.0'}]
-        # ),
 
-        # 2. Static Transforms (Exactly 8 arguments)
-        # Change '--yaw', '0' par '--yaw', '3.14159'
+        # TFs statiques (laser -> base_link, etc.)
         Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            arguments=['--x', '0.1', '--y', '0', '--z', '0.05', 
-                    '--yaw', '3.14159', '--pitch', '0', '--roll', '0', 
-                    '--frame-id', 'base_link', '--child-frame-id', 'laser_link']
-        ),
-        Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            arguments=['--x', '0.0', '--y', '0', '--z', '0.1', 
-                    '--yaw', '0', '--pitch', '0', '--roll', '0', 
-                    '--frame-id', 'base_link', '--child-frame-id', 'imu_link']
-        ),
-
-        # 3. PointCloud -> LaserScan
-        Node(
-            package='pointcloud_to_laserscan',
-            executable='pointcloud_to_laserscan_node',
-            name='pointcloud_to_laserscan',
-            parameters=[{
-                'target_frame': 'laser_link', 
-                'transform_tolerance': 0.1,
-                'min_height': -1.0,
-                'max_height': 1.0,
-                'angle_min': -3.1415,
-                'angle_max': 3.1415,
-                'angle_increment': 0.01745,
-                'scan_time': 0.1,
-                'range_min': 0.1,
-                'range_max': 15.0,
-                'use_inf': True  # CRITICAL: Use True so values > 12m are handled correctly
-            }],
-            remappings=[('cloud_in', '/point_cloud'), ('scan', '/scan')]
-        ),
-
-        # 4. RF2O Laser Odometry (Debug Mode: TF Enabled)
-        Node(
-            package='rf2o_laser_odometry',
-            executable='rf2o_laser_odometry_node',
-            name='rf2o_odometry',
-            parameters=[{
-                'laser_scan_topic': '/scan_fixed',
-                'odom_topic': '/odom_rf2o',
-                'base_frame_id': 'base_link',
-                'odom_frame_id': 'odom',
-                'sensor_frame_id': 'laser_link',
-                'publish_tf': True,
-                'use_best_effort_qos': True,
-                # --- ADD THESE THREE LINES ---
-                'tf_timeout': 0.5,           # Increase time allowed to find TF
-                'freq': 10.0,               # Match this close to your scan rate (6.5Hz)
-                'init_pose_from_topic': '',  # Ensure it doesn't wait for a manual trigger
-            }]
-        ),
-
-        Node(
-            package='my_rover_slam', # Or wherever you put the script
-            executable='scan_time_fixer',
-            name='scan_time_fixer'
-        ),
-
-        # 5. Robot Localization (EKF)
-        Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
+            package='my_rover_slam',
+            executable='static_tf_publisher',
+            name='static_tf_publisher',
             output='screen',
-            parameters=[ekf_config_path]
         ),
-
-        # 6. SLAM Toolbox (Asynchronous Mapping)
-        Node(
-            package='slam_toolbox',
-            executable='async_slam_toolbox_node',
-            name='slam_toolbox',
-            output='screen',
-            parameters=[{
-                'use_sim_time': False,
-                'odom_frame': 'odom',
-                'base_frame': 'base_link',
-                'map_frame': 'map',
-                'scan_topic': '/scan_fixed'
-            }]
-        )
-
         
-        # 5. EKF and SLAM are commented out for now. 
-        # Get /odom_rf2o working first!
+        # NOUVEAU : Odométrie basée sur les commandes moteurs (PWM)
+        Node(
+            package='my_rover_slam',
+            executable='wheel_odometry_node', # <- Mets bien le nom de ton nouveau script compilé ici
+            name='wheel_odometry',
+            output='screen',
+        ),
+
+        # Attend 2s que les TFs et l'Odométrie soient bien publiés
+        TimerAction(
+            period=2.0,
+            actions=[
+                Node(
+                    package='slam_toolbox',
+                    executable='async_slam_toolbox_node',
+                    name='slam_toolbox',
+                    output='screen',
+                    parameters=[{
+                        'use_sim_time': False,
+                        'odom_frame':   'odom',
+                        'base_frame':   'base_link',
+                        'map_frame':    'map',
+                        'scan_topic':   '/scan',
+                        
+                        # Mise à jour du topic de l'odométrie
+                        'odom_topic':   '/odom',
+                        'mode':         'mapping',
+
+                        'resolution':              0.05,
+                        'map_update_interval': 0.5,       # Met à jour la carte plus souvent
+                        'max_laser_range': 8.0,           # Ne pas prendre les points trop loin (souvent bruités)
+                        'minimum_time_interval': 0.1,     # Accepte des scans plus rapidement
+                        'transform_publish_period': 0.02, # Publie la TF très vite pour éviter le lag
+
+                        'coarse_search_angle_offset':          0.349,
+                        'fine_search_angle_offset':            0.00349,
+                        'correlation_search_space_dimension':  0.3,
+                        'correlation_search_space_resolution': 0.01,
+
+                        # ==================== LOOP CLOSURE ====================
+                        # C'est ÇA qui permet de fermer le circuit du couloir
+                        'do_loop_closing': True,
+                        'loop_search_maximum_distance':        4.0, # Cherche à raccorder si on est à moins de 4m d'un lieu connu
+                        'loop_match_minimum_response_fine':    0.8, # Un peu baissé pour forcer l'accroche
+                        'loop_match_minimum_response_coarse':  0.8,
+
+                        'transform_timeout':  0.5,
+                        'tf_buffer_duration': 10.0,
+                    }]
+                ),
+            ]
+        ),
     ])

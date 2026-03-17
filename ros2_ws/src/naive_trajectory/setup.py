@@ -27,6 +27,8 @@ setup(
             'naive_trajectory = naive_trajectory.naive_trajectory:main',
             'emulation = naive_trajectory.emulation:main',
             'naive_trajectory2 = naive_trajectory.naive_trajectory2:main',
+            'naiv_traj_lidar = naive_trajectory.naive_traj_lidar:main',
+            'imu_odom = naive_trajectory.imuodometry:main'
 
         ],
     },

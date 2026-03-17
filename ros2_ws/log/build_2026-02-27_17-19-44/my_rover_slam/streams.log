@@ -1,0 +1,20 @@
+[0.930s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/rover_slam_ws': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/my_rover_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_rover_slam build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/install.log --single-version-externally-managed install_data
+[1.119s] running egg_info
+[1.131s] writing ../../build/my_rover_slam/my_rover_slam.egg-info/PKG-INFO
+[1.131s] writing dependency_links to ../../build/my_rover_slam/my_rover_slam.egg-info/dependency_links.txt
+[1.131s] writing entry points to ../../build/my_rover_slam/my_rover_slam.egg-info/entry_points.txt
+[1.131s] writing requirements to ../../build/my_rover_slam/my_rover_slam.egg-info/requires.txt
+[1.131s] writing top-level names to ../../build/my_rover_slam/my_rover_slam.egg-info/top_level.txt
+[2.414s] writing manifest file '../../build/my_rover_slam/my_rover_slam.egg-info/SOURCES.txt'
+[2.414s] running build
+[2.414s] running build_py
+[2.414s] copying my_rover_slam/scan_time_fixer.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/build/lib/my_rover_slam
+[2.414s] copying my_rover_slam/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/build/lib/my_rover_slam
+[2.414s] running install
+[2.417s] running install_lib
+[2.433s] running install_data
+[2.433s] copying resource/my_rover_slam -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/my_rover_slam/share/ament_index/resource_index/packages
+[2.433s] copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/my_rover_slam/share/my_rover_slam
+[2.433s] copying launch/start_slam.launch.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/my_rover_slam/share/my_rover_slam/launch
+[2.433s] error: can't copy 'config/pointcloud_to_laserscan.yaml': doesn't exist or not a regular file
+[2.457s] Invoked command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/rover_slam_ws' returned '1': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/my_rover_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/my_rover_slam build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/my_rover_slam/install.log --single-version-externally-managed install_data

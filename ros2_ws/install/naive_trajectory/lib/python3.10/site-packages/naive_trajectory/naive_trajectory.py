@@ -272,7 +272,7 @@ class AdaptiveCorridorFollower(Node):
             # 1. Largeur du gap (plus large = mieux)
             # 2. Proximité avec l'axe central (CENTER_BIAS)
             # 3. Continuité avec la direction précédente
-            # 4. NOUVEAU: Bonus pour les directions proches de tout droit
+            # 4. Bonus pour les directions proches de tout droit
             
             width_score = min(gap['width'] / 10.0, 1.0)
             center_score = 1.0 - abs(gap['angle']) / (scan_angle_rad/2)
