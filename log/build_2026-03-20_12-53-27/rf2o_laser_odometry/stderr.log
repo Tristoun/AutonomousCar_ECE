@@ -1,0 +1,7 @@
+gmake[2]: *** Deleting file 'rf2o_laser_odometry_node'
+gmake[2]: *** Deleting file 'librf2o_laser_odometry.a'
+gmake[2]: *** [CMakeFiles/rf2o_laser_odometry_node.dir/build.make:230: rf2o_laser_odometry_node] Interrupt
+gmake[1]: *** [CMakeFiles/Makefile2:139: CMakeFiles/rf2o_laser_odometry_node.dir/all] Interrupt
+gmake[2]: *** [CMakeFiles/rf2o_laser_odometry.dir/build.make:98: librf2o_laser_odometry.a] Interrupt
+gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/rf2o_laser_odometry.dir/all] Interrupt
+gmake: *** [Makefile:146: all] Interrupt

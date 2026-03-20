@@ -1,0 +1,54 @@
+[1.310s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/rover_slam_ws': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/my_rover_slam build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/install.log --single-version-externally-managed install_data
+[1.638s] running egg_info
+[1.638s] creating ../../../build/my_rover_slam/my_rover_slam.egg-info
+[1.654s] writing ../../../build/my_rover_slam/my_rover_slam.egg-info/PKG-INFO
+[1.655s] writing dependency_links to ../../../build/my_rover_slam/my_rover_slam.egg-info/dependency_links.txt
+[1.656s] writing entry points to ../../../build/my_rover_slam/my_rover_slam.egg-info/entry_points.txt
+[1.656s] writing requirements to ../../../build/my_rover_slam/my_rover_slam.egg-info/requires.txt
+[1.656s] writing top-level names to ../../../build/my_rover_slam/my_rover_slam.egg-info/top_level.txt
+[1.656s] writing manifest file '../../../build/my_rover_slam/my_rover_slam.egg-info/SOURCES.txt'
+[3.376s] writing manifest file '../../../build/my_rover_slam/my_rover_slam.egg-info/SOURCES.txt'
+[3.376s] running build
+[3.376s] running build_py
+[3.376s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build
+[3.377s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib
+[3.377s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/static_tf_publisher.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/lap_counter.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/scan_time_fixer.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/imu_odometry_node.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/wheel_odometry.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] copying my_rover_slam/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam
+[3.377s] running install
+[3.385s] running install_lib
+[3.402s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.402s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/static_tf_publisher.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/lap_counter.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/scan_time_fixer.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/imu_odometry_node.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/wheel_odometry.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build/lib/my_rover_slam/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam
+[3.403s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/static_tf_publisher.py to static_tf_publisher.cpython-310.pyc
+[3.404s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/lap_counter.py to lap_counter.cpython-310.pyc
+[3.405s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/scan_time_fixer.py to scan_time_fixer.cpython-310.pyc
+[3.405s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/imu_odometry_node.py to imu_odometry_node.cpython-310.pyc
+[3.408s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/wheel_odometry.py to wheel_odometry.cpython-310.pyc
+[3.408s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam/__init__.py to __init__.cpython-310.pyc
+[3.408s] running install_data
+[3.408s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/ament_index
+[3.408s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/ament_index/resource_index
+[3.408s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/ament_index/resource_index/packages
+[3.408s] copying resource/my_rover_slam -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/ament_index/resource_index/packages
+[3.408s] copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/my_rover_slam
+[3.409s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/my_rover_slam/launch
+[3.409s] copying launch/start_slam.launch.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/share/my_rover_slam/launch
+[3.409s] running install_egg_info
+[3.429s] Copying ../../../build/my_rover_slam/my_rover_slam.egg-info to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages/my_rover_slam-0.0.0-py3.10.egg-info
+[3.430s] running install_scripts
+[3.597s] Installing imu_odometry_node script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/my_rover_slam
+[3.597s] Installing lap_counter script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/my_rover_slam
+[3.597s] Installing scan_time_fixer script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/my_rover_slam
+[3.597s] Installing static_tf_publisher script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/my_rover_slam
+[3.597s] Installing wheel_odometry_node script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/my_rover_slam
+[3.598s] writing list of installed files to '/home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/install.log'
+[3.630s] Invoked command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/rover_slam_ws' returned '0': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/install/my_rover_slam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/my_rover_slam build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/my_rover_slam/install.log --single-version-externally-managed install_data

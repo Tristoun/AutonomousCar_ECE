@@ -4,7 +4,7 @@
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
-#include <sensor_msgs/msg/point_cloud2.h>
+#include <sensor_msgs/msg/laser_scan.h>
 #include <sensor_msgs/msg/imu.h>
 #include <rosidl_runtime_c/string_functions.h>
 #include <rmw_microros/rmw_microros.h> 
@@ -19,29 +19,23 @@
 const int MPU_ADDR = 0x68;
 #define WIFI_SSID "Arecetri"
 #define WIFI_PASSWORD "arece1234"
-#define AGENT_IP IPAddress(10, 36, 21, 183) //WARNING : set your computer IP ADDR
-
+#define AGENT_IP IPAddress(10, 49, 241, 183) 
 #define AGENT_PORT 8888
 #define MAX_POINTS 460 
 
-//Struct for imu data
 typedef struct {
     float acc[3];
     float gyro[3];
     uint64_t timestamp;
 } imu_data_t;
 
-//Struct for lidar data
+// Structure LaserScan modifiée
 typedef struct {
-    float x[MAX_POINTS];
-    float y[MAX_POINTS];
-    float z[MAX_POINTS];
-    float intensity[MAX_POINTS];
-    int count;
+    float ranges[MAX_POINTS];
+    float intensities[MAX_POINTS];
     uint64_t timestamp;
 } lidar_scan_t;
 
-//Queue : Similar to FIFO to send data forever
 QueueHandle_t imu_queue;
 QueueHandle_t lidar_queue; 
 
@@ -53,15 +47,15 @@ rcl_publisher_t lidar_pub;
 rcl_publisher_t imu_pub;
 rcl_subscription_t motor_sub;
 
-sensor_msgs__msg__PointCloud2 cloud;
+sensor_msgs__msg__LaserScan laser_msg;
+float laser_ranges_buffer[MAX_POINTS];
+float laser_intensities_buffer[MAX_POINTS];
+
 sensor_msgs__msg__Imu imu_msg;
-uint8_t cloud_data_buffer[MAX_POINTS * 16]; 
-sensor_msgs__msg__PointField field_buffer[4];
 std_msgs__msg__Int16MultiArray motor_msg;
 
-enum states { WAITING_AGENT, AGENT_CONNECTED, AGENT_DISCONNECTED } state; //State machine
+enum states { WAITING_AGENT, AGENT_CONNECTED, AGENT_DISCONNECTED } state; 
 
-//Imu calib variables
 float gyro_bias_x = 0, gyro_bias_y = 0, gyro_bias_z = 0;
 float accel_bias_x = 0, accel_bias_y = 0, accel_bias_z = 0;
 
@@ -71,26 +65,12 @@ void init_imu_msg() {
     imu_msg.orientation_covariance[0] = -1;
 }
 
-void init_point_cloud_msg() {
-    rosidl_runtime_c__String__assign(&cloud.header.frame_id, "laser_link");
-    cloud.height = 1;
-    cloud.is_bigendian = false;
-    cloud.is_dense = true;
-    cloud.point_step = 16;
-    cloud.fields.data = field_buffer;
-    cloud.fields.size = 4;
-    cloud.fields.capacity = 4;
-    cloud.data.data = cloud_data_buffer;
-    cloud.data.capacity = sizeof(cloud_data_buffer);
-
-    rosidl_runtime_c__String__assign(&cloud.fields.data[0].name, "x");
-    cloud.fields.data[0].offset = 0; cloud.fields.data[0].datatype = 7; cloud.fields.data[0].count = 1; 
-    rosidl_runtime_c__String__assign(&cloud.fields.data[1].name, "y");
-    cloud.fields.data[1].offset = 4; cloud.fields.data[1].datatype = 7; cloud.fields.data[1].count = 1;
-    rosidl_runtime_c__String__assign(&cloud.fields.data[2].name, "z");
-    cloud.fields.data[2].offset = 8; cloud.fields.data[2].datatype = 7; cloud.fields.data[2].count = 1;
-    rosidl_runtime_c__String__assign(&cloud.fields.data[3].name, "intensity");
-    cloud.fields.data[3].offset = 12; cloud.fields.data[3].datatype = 7; cloud.fields.data[3].count = 1;
+void init_laser_scan_msg() {
+    rosidl_runtime_c__String__assign(&laser_msg.header.frame_id, "laser_link"); 
+    laser_msg.ranges.data = laser_ranges_buffer;
+    laser_msg.ranges.capacity = MAX_POINTS;
+    laser_msg.intensities.data = laser_intensities_buffer;
+    laser_msg.intensities.capacity = MAX_POINTS;
 }
 
 void configure_mpu6050() {
@@ -133,67 +113,43 @@ void calibrate_mpu6050(int samples = 500) {
 
 void motor_pwm_callback(const void * msg_in) {
     const std_msgs__msg__Int16MultiArray * msg = (const std_msgs__msg__Int16MultiArray *)msg_in;
-    if (msg->data.size < 2) return;  // Expect at least 2 elements: left, right
+    if (msg->data.size < 2) return;  
 
-    int left_pwm = msg->data.data[0];  // -255 -> 255
-    int right_pwm = msg->data.data[1]; // -255 -> 255
+    int left_pwm = msg->data.data[0];  
+    int right_pwm = msg->data.data[1]; 
 
-    // Map the PWM values to motor driver function
-    channel_A_Ctrl(left_pwm);   // Left motor
-    channel_B_Ctrl(right_pwm);  // Right motor
+    channel_A_Ctrl(left_pwm);   
+    channel_B_Ctrl(right_pwm);  
 }
 
+bool create_entities() {
+    allocator = rcl_get_default_allocator();
+    rclc_support_init(&support, 0, NULL, &allocator);
+    
+    if (rclc_node_init_default(&node, "esp32_node", "", &support) != RCL_RET_OK) return false;
 
-void setup() {
-    Serial.begin(115200);
-    delay(2000);
-    // Lidar Serial
-    Serial2.setRxBufferSize(4096);
-    Serial2.begin(230400, SERIAL_8N1, 16, 17);
-
-    // --- Publishers ---
-    rclc_publisher_init_default(&lidar_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, PointCloud2), "point_cloud");
+    rclc_publisher_init_default(&lidar_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, LaserScan), "scan");
     rclc_publisher_init_default(&imu_pub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu), "imu_data");
     
-    // --- Subscriber ---
-    rclc_subscription_init_default(
-        &motor_sub,
-        &node,
-        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int16MultiArray),
-        "motor_pwm"
-    );
+    rclc_subscription_init_default(&motor_sub, &node, ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int16MultiArray), "motor_pwm");
 
-    // --- CRITICAL FIX: Initialize Subscriber Message Memory ---
-    // We must provide a buffer for the executor to write the incoming data into.
-    // Since create_entities might be called multiple times (reconnections), 
-    // we use a static buffer to avoid memory leaks or re-allocation.
-    static int16_t motor_data_buffer[4]; // Buffer for up to 4 values (Left, Right, etc.)
+    static int16_t motor_data_buffer[4]; 
     motor_msg.data.capacity = 4;
     motor_msg.data.data = motor_data_buffer;
     motor_msg.data.size = 0;
 
-    // --- Executor ---
     executor = rclc_executor_get_zero_initialized_executor();
-    // Handles: 1 subscription. (Publishers don't count as handles in the executor)
     rclc_executor_init(&executor, &support.context, 1, &allocator);
     
-    rclc_executor_add_subscription(
-        &executor,
-        &motor_sub,
-        &motor_msg,
-        &motor_pwm_callback,
-        ON_NEW_DATA
-    );
+    rclc_executor_add_subscription(&executor, &motor_sub, &motor_msg, &motor_pwm_callback, ON_NEW_DATA);
 
-    init_point_cloud_msg();
+    init_laser_scan_msg(); 
     init_imu_msg();
     rmw_uros_sync_session(1000);
     return true;
 }
 
-
 void destroy_entities() {
-    //Ending the ros2 node
     rcl_publisher_fini(&lidar_pub, &node);
     rcl_publisher_fini(&imu_pub, &node);
     rcl_node_fini(&node);
@@ -201,28 +157,30 @@ void destroy_entities() {
     rclc_support_fini(&support);
 }
 
+// Fonction utilitaire pour réinitialiser un tableau scan (vide = distance 0)
+void reset_scan(lidar_scan_t* scan) {
+    for(int i = 0; i < MAX_POINTS; i++) {
+        scan->ranges[i] = 0.0f;
+        scan->intensities[i] = 0.0f;
+    }
+}
 
 void sensor_motor_task(void * pvParameters) {
-    /*Task from RTOS
-    * We get data from all of our sensors and even using the wheels here
-    */ 
-    std::vector<LidarPoint> scanBuffer;
     float last_angle = 0;
     unsigned long last_imu_time = 0;
     const unsigned long IMU_INTERVAL = 50; 
 
-    // Initialize data structure for Lidar
     lidar_scan_t* current_scan = new lidar_scan_t();
-    current_scan->count = 0;
+    reset_scan(current_scan);
 
     for (;;) {
-        // 2. IMU SAMPLING
+        // IMU SAMPLING
         if (millis() - last_imu_time > IMU_INTERVAL) {
             imu_data_t imu_raw;
             Wire.beginTransmission(MPU_ADDR);
             Wire.write(0x3B);
             Wire.endTransmission(false);
-            if (Wire.requestFrom(MPU_ADDR, 14, true) == 14) { //Reading imu data
+            if (Wire.requestFrom(MPU_ADDR, 14, true) == 14) { 
                 int16_t AcX = Wire.read() << 8 | Wire.read();
                 int16_t AcY = Wire.read() << 8 | Wire.read();
                 int16_t AcZ = Wire.read() << 8 | Wire.read();
@@ -244,38 +202,37 @@ void sensor_motor_task(void * pvParameters) {
             last_imu_time = millis();
         }
 
-        // Lidar collector data
+        // LIDAR SAMPLING
         while (Serial2.available() > 47) {
             std::vector<LidarPoint> newPoints = getPoints();
             if (newPoints.empty()) continue;
 
             float current_angle = newPoints.back().angle();
+            
             for (auto &p : newPoints) {
-                if (p.distance() > 50 && p.distance() < 12000 && current_scan->count < MAX_POINTS) {
-                    float angle_rad = (p.angle() / 100.0f) * (PI / 180.0f);
-                    float dist_m = p.distance() / 1000.0f;
-                    
-                    int i = current_scan->count;
-                    current_scan->x[i] = dist_m * cos(angle_rad);
-                    current_scan->y[i] = dist_m * sin(angle_rad);
-                    current_scan->z[i] = 0.0f;
-                    current_scan->intensity[i] = (float)p.intensity();
-                    current_scan->count++;
+                float angle_rad = (p.angle() / 100.0f) * (PI / 180.0f);
+                float dist_m = p.distance() / 1000.0f;
+                
+                // On mappe l'angle (0 à 2*PI) sur un index (0 à MAX_POINTS-1)
+                int index = round((angle_rad / (2.0f * PI)) * MAX_POINTS);
+                if (index >= MAX_POINTS) index = 0; // Sécurité si angle = 360° pile
+                if (index < 0) index = 0;
+
+                // On ne garde que les points valides
+                if (dist_m > 0.05f && dist_m < 12.0f) {
+                    current_scan->ranges[index] = dist_m;
+                    current_scan->intensities[index] = (float)p.intensity();
                 }
-            } else {
-                // Drain Lidar buffer while waiting
-                while(Serial2.available()) Serial2.read(); 
-                Serial.println(".");
             }
 
+            // Détection de fin de tour (chute drastique de l'angle)
             if (current_angle < last_angle - 20000) {
                 current_scan->timestamp = rmw_uros_epoch_nanos();
-                // Push POINTER to queue
-                if(xQueueSend(lidar_queue, &current_scan, 0) == pdPASS) { //Check if all good
-                    current_scan = new lidar_scan_t(); // Memory for next scan
-                    current_scan->count = 0;
+                if(xQueueSend(lidar_queue, &current_scan, 0) == pdPASS) { 
+                    current_scan = new lidar_scan_t(); 
+                    reset_scan(current_scan);
                 } else {
-                    current_scan->count = 0; // Drop data if queue full
+                    reset_scan(current_scan); // Nettoyage si la queue est pleine
                 }
             }
             last_angle = current_angle;
@@ -284,7 +241,6 @@ void sensor_motor_task(void * pvParameters) {
     }
 }
 
-//Micro ros communication core
 void microros_task(void * pvParameters) {
     imu_data_t incoming_imu;
     lidar_scan_t* incoming_lidar = NULL;
@@ -303,7 +259,7 @@ void microros_task(void * pvParameters) {
                     break;
                 }
 
-                // 1. Check IMU Queue
+                // Publish IMU
                 if (xQueueReceive(imu_queue, &incoming_imu, 0) == pdPASS) {
                     imu_msg.header.stamp.sec = incoming_imu.timestamp / 1000000000;
                     imu_msg.header.stamp.nanosec = incoming_imu.timestamp % 1000000000;
@@ -316,23 +272,29 @@ void microros_task(void * pvParameters) {
                     rcl_publish(&imu_pub, &imu_msg, NULL);
                 }
 
-                // 2. Check Lidar Queue (Pointer)
+                // Publish LaserScan FIXÉ
                 if (xQueueReceive(lidar_queue, &incoming_lidar, 0) == pdPASS) {
-                    cloud.header.stamp.sec = incoming_lidar->timestamp / 1000000000;
-                    cloud.header.stamp.nanosec = incoming_lidar->timestamp % 1000000000;
-                    cloud.width = incoming_lidar->count;
-                    cloud.row_step = cloud.point_step * cloud.width;
-                    cloud.data.size = cloud.row_step;
+                    laser_msg.header.stamp.sec = incoming_lidar->timestamp / 1000000000;
+                    laser_msg.header.stamp.nanosec = incoming_lidar->timestamp % 1000000000;
+                    
+                    // On fixe la géométrie du scan en dur (un cercle complet)
+                    laser_msg.angle_min = 0.0f;
+                    laser_msg.angle_max = 2.0f * PI;
+                    laser_msg.angle_increment = (2.0f * PI) / MAX_POINTS;
+                    
+                    laser_msg.time_increment = 0.0;
+                    laser_msg.scan_time = 0.0;
+                    laser_msg.range_min = 0.05f;  
+                    laser_msg.range_max = 12.0f;  
+                    
+                    laser_msg.ranges.size = MAX_POINTS;
+                    laser_msg.intensities.size = MAX_POINTS;
 
-                    for (int i = 0; i < incoming_lidar->count; i++) {
-                        int offset = i * 16;
-                        memcpy(&cloud_data_buffer[offset], &incoming_lidar->x[i], 4);
-                        memcpy(&cloud_data_buffer[offset+4], &incoming_lidar->y[i], 4);
-                        memcpy(&cloud_data_buffer[offset+8], &incoming_lidar->z[i], 4);
-                        memcpy(&cloud_data_buffer[offset+12], &incoming_lidar->intensity[i], 4);
-                    }
-                    rcl_publish(&lidar_pub, &cloud, NULL);
-                    delete incoming_lidar; // Free memory allocated in Core 1
+                    memcpy(laser_msg.ranges.data, incoming_lidar->ranges, MAX_POINTS * sizeof(float));
+                    memcpy(laser_msg.intensities.data, incoming_lidar->intensities, MAX_POINTS * sizeof(float));
+
+                    rcl_publish(&lidar_pub, &laser_msg, NULL);
+                    delete incoming_lidar; 
                 }
 
                 rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10));
@@ -357,24 +319,20 @@ void setup() {
     configure_mpu6050();
     calibrate_mpu6050();
 
-    // Motor Pins
     pinMode(AIN1, OUTPUT); pinMode(AIN2, OUTPUT); pinMode(PWMA, OUTPUT);
     pinMode(BIN1, OUTPUT); pinMode(BIN2, OUTPUT); pinMode(PWMB, OUTPUT);
     ledcSetup(channel_A, freq, resolution); ledcAttachPin(PWMA, channel_A);
     ledcSetup(channel_B, freq, resolution); ledcAttachPin(PWMB, channel_B);
 
-    // Create Queues
-    imu_queue = xQueueCreate(10, sizeof(imu_data_t)); //Size of queue
+    imu_queue = xQueueCreate(10, sizeof(imu_data_t)); 
     lidar_queue = xQueueCreate(2, sizeof(lidar_scan_t*)); 
 
     state = WAITING_AGENT;
 
-    // Launch Tasks
     xTaskCreatePinnedToCore(sensor_motor_task, "Sensors", 8192, NULL, 3, NULL, 1);
     xTaskCreatePinnedToCore(microros_task, "microRos", 12288, NULL, 2, NULL, 0);
 }
 
 void loop() {
-    // Empty - All logic moved to tasks
     vTaskDelete(NULL);
 }

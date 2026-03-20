@@ -1,0 +1,22 @@
+running egg_info
+writing ../../../build/control_foxglove/control_foxglove.egg-info/PKG-INFO
+writing dependency_links to ../../../build/control_foxglove/control_foxglove.egg-info/dependency_links.txt
+writing entry points to ../../../build/control_foxglove/control_foxglove.egg-info/entry_points.txt
+writing requirements to ../../../build/control_foxglove/control_foxglove.egg-info/requires.txt
+writing top-level names to ../../../build/control_foxglove/control_foxglove.egg-info/top_level.txt
+writing manifest file '../../../build/control_foxglove/control_foxglove.egg-info/SOURCES.txt'
+running build
+running build_py
+copying control_foxglove/control_foxglove.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/control_foxglove/build/lib/control_foxglove
+copying control_foxglove/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/build/control_foxglove/build/lib/control_foxglove
+running install
+running install_lib
+running install_data
+copying resource/control_foxglove -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/control_foxglove/share/ament_index/resource_index/packages
+copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/control_foxglove/share/control_foxglove
+running install_egg_info
+removing '/home/tristan/Documents/autonomous_car_ece/car_control_wave/install/control_foxglove/lib/python3.10/site-packages/control_foxglove-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../../build/control_foxglove/control_foxglove.egg-info to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/control_foxglove/lib/python3.10/site-packages/control_foxglove-0.0.0-py3.10.egg-info
+running install_scripts
+Installing control_foxglove script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/install/control_foxglove/lib/control_foxglove
+writing list of installed files to '/home/tristan/Documents/autonomous_car_ece/car_control_wave/build/control_foxglove/install.log'
