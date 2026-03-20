@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
-from std_msgs.msg import Int16MultiArray
+from std_msgs.msg import Int16MultiArray, Int32
 import time
 
 class CorridorStepMaster(Node):
@@ -14,8 +14,8 @@ class CorridorStepMaster(Node):
         self.PWM_TURN    = 115 # Puissance de rotation contrôlée
         
         # Seuils
-        self.FRONT_DANGER = 0.6
-        self.SIDE_THRESHOLD = 0.50 
+        self.FRONT_DANGER = 0.7
+        self.SIDE_THRESHOLD = 0.5 
 
         # Machine à états
         self.STATE_DRIVE = "DRIVE"
@@ -27,12 +27,18 @@ class CorridorStepMaster(Node):
         self.ranges = []
         self.motor_pub = self.create_publisher(Int16MultiArray, '/motor_pwm', 10)
         self.create_subscription(LaserScan, '/scan', self.lidar_callback, 10)
+        self.create_subscription(Int32, '/lap_count', self.lap_callback, 10)
+
         self.create_timer(0.05, self.control_loop)
+        self.lap_count = 1
 
         self.get_logger().info("🐢 Mode Step-by-Step activé pour SLAM stable")
 
     def lidar_callback(self, msg):
         self.ranges = msg.ranges
+    
+    def lap_callback(self, msg) :
+        self.lap_count = msg.data
 
     def get_dist(self, idx):
         if not self.ranges: return 10.0
@@ -43,7 +49,8 @@ class CorridorStepMaster(Node):
 
     def control_loop(self):
         if not self.ranges: return
-        
+        if self.lap_count > 1 : 
+            return
         now = self.get_clock().now().nanoseconds / 1e9
 
         # --- GESTION DE L'ATTENTE (STABILISATION SLAM) ---
@@ -53,7 +60,7 @@ class CorridorStepMaster(Node):
                 return
             else:
                 self.state = self.STATE_DRIVE # On repart
-                self.get_logger().info("▶️ Reprise de la marche")
+                # self.get_logger().info("▶️ Reprise de la marche")
 
         # --- LECTURE CAPTEURS ---
         d_front = self.get_dist(0)
@@ -79,7 +86,7 @@ class CorridorStepMaster(Node):
             self.send_motors(0, 0)
             self.state = self.STATE_WAIT
             self.state_end_time = now + 0.8 # On attend 0.8s sans bouger
-            self.get_logger().warn("🛑 Pivot bref -> Pause stabilisation SLAM")
+            # self.get_logger().warn("🛑 Pivot bref -> Pause stabilisation SLAM")
             return
 
         # Sinon, marche avant classique

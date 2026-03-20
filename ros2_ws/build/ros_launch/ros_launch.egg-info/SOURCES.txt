@@ -1,0 +1,15 @@
+package.xml
+setup.cfg
+setup.py
+../../build/ros_launch/ros_launch.egg-info/PKG-INFO
+../../build/ros_launch/ros_launch.egg-info/SOURCES.txt
+../../build/ros_launch/ros_launch.egg-info/dependency_links.txt
+../../build/ros_launch/ros_launch.egg-info/requires.txt
+../../build/ros_launch/ros_launch.egg-info/top_level.txt
+../../build/ros_launch/ros_launch.egg-info/zip-safe
+launch/project.launch.py
+resource/ros_launch
+ros_launch/__init__.py
+test/test_copyright.py
+test/test_flake8.py
+test/test_pep257.py

@@ -11,6 +11,7 @@ setup.py
 launch/start_slam.launch.py
 my_rover_slam/__init__.py
 my_rover_slam/imu_odometry_node.py
+my_rover_slam/lap_counter.py
 my_rover_slam/scan_time_fixer.py
 my_rover_slam/static_tf_publisher.py
 my_rover_slam/wheel_odometry.py

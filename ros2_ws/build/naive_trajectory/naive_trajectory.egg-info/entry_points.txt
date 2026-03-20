@@ -1,6 +1,4 @@
 [console_scripts]
-emulation = naive_trajectory.emulation:main
-imu_odom = naive_trajectory.imuodometry:main
-naiv_traj_lidar = naive_trajectory.naive_traj_lidar:main
-naive_trajectory = naive_trajectory.naive_trajectory:main
-naive_trajectory2 = naive_trajectory.naive_trajectory2:main
+naive_traj_lidar = naive_trajectory.naive_traj_lidar:main
+planner = naive_trajectory.planner:main
+pure_pursuit = naive_trajectory.pure_pursuit:main

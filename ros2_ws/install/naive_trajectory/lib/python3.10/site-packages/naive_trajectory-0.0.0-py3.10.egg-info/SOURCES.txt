@@ -8,11 +8,14 @@ setup.py
 ../../build/naive_trajectory/naive_trajectory.egg-info/requires.txt
 ../../build/naive_trajectory/naive_trajectory.egg-info/top_level.txt
 ../../build/naive_trajectory/naive_trajectory.egg-info/zip-safe
+launch/traj.launch.py
 naive_trajectory/__init__.py
 naive_trajectory/emulation.py
 naive_trajectory/naive_traj_lidar.py
 naive_trajectory/naive_trajectory.py
 naive_trajectory/naive_trajectory2.py
+naive_trajectory/planner.py
+naive_trajectory/pure_pursuit.py
 naive_trajectory/python_default.py
 resource/naive_trajectory
 test/test_copyright.py

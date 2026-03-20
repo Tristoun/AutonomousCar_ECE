@@ -29,8 +29,8 @@ setup(
             'scan_time_fixer = my_rover_slam.scan_time_fixer:main',
             'imu_odometry_node = my_rover_slam.imu_odometry_node:main',
             'static_tf_publisher  = my_rover_slam.static_tf_publisher:main',
-            'wheel_odometry_node = my_rover_slam.wheel_odometry:main'
-
+            'wheel_odometry_node = my_rover_slam.wheel_odometry:main',
+            'lap_counter = my_rover_slam.lap_counter:main'
         ],
     },
 )

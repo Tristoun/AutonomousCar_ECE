@@ -10,6 +10,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch',
+	    ['launch/traj.launch.py'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,12 +26,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'naive_trajectory = naive_trajectory.naive_trajectory:main',
-            'emulation = naive_trajectory.emulation:main',
-            'naive_trajectory2 = naive_trajectory.naive_trajectory2:main',
-            'naiv_traj_lidar = naive_trajectory.naive_traj_lidar:main',
-            'imu_odom = naive_trajectory.imuodometry:main'
-
+            'naive_traj_lidar = naive_trajectory.naive_traj_lidar:main', 
+            'pure_pursuit = naive_trajectory.pure_pursuit:main',
+            'planner = naive_trajectory.planner:main',
         ],
     },
 )
