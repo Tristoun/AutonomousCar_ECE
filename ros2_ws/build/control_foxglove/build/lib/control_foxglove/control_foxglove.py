@@ -14,9 +14,9 @@ class TeleopPWMControl(Node):
         super().__init__("teleop_pwm_control")
 
         # ===================== PARAMETERS =====================
-        self.MAX_PWM = 100
-        self.MAX_LINEAR_PWM = 100
-        self.MAX_TURN_PWM = 90
+        self.MAX_PWM = 150
+        self.MAX_LINEAR_PWM = 150
+        self.MAX_TURN_PWM = 150
         self.DEADBAND = 0.05
 
         self.estop_active = False

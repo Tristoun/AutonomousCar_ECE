@@ -33,7 +33,7 @@ def generate_launch_description():
     return LaunchDescription([
         robot_description_launch,
         slam_launch,
-        trajectory_launch,
+        # trajectory_launch,
 
     ])
 

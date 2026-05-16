@@ -1,0 +1,36 @@
+[1.674s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/control_foxglove': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/control_foxglove build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/install.log --single-version-externally-managed install_data
+[2.006s] running egg_info
+[2.006s] creating ../../build/control_foxglove/control_foxglove.egg-info
+[2.023s] writing ../../build/control_foxglove/control_foxglove.egg-info/PKG-INFO
+[2.024s] writing dependency_links to ../../build/control_foxglove/control_foxglove.egg-info/dependency_links.txt
+[2.025s] writing entry points to ../../build/control_foxglove/control_foxglove.egg-info/entry_points.txt
+[2.025s] writing requirements to ../../build/control_foxglove/control_foxglove.egg-info/requires.txt
+[2.025s] writing top-level names to ../../build/control_foxglove/control_foxglove.egg-info/top_level.txt
+[2.025s] writing manifest file '../../build/control_foxglove/control_foxglove.egg-info/SOURCES.txt'
+[4.803s] writing manifest file '../../build/control_foxglove/control_foxglove.egg-info/SOURCES.txt'
+[4.804s] running build
+[4.804s] running build_py
+[4.806s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build
+[4.815s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib
+[4.815s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib/control_foxglove
+[4.815s] copying control_foxglove/control_foxglove.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib/control_foxglove
+[4.815s] copying control_foxglove/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib/control_foxglove
+[4.815s] running install
+[4.816s] running install_lib
+[4.858s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove
+[4.858s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib/control_foxglove/control_foxglove.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove
+[4.858s] copying /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build/lib/control_foxglove/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove
+[4.858s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove/control_foxglove.py to control_foxglove.cpython-310.pyc
+[4.858s] byte-compiling /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove/__init__.py to __init__.cpython-310.pyc
+[4.858s] running install_data
+[4.858s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/share/ament_index
+[4.858s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/share/ament_index/resource_index
+[4.858s] creating /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/share/ament_index/resource_index/packages
+[4.859s] copying resource/control_foxglove -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/share/ament_index/resource_index/packages
+[4.859s] copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/share/control_foxglove
+[4.859s] running install_egg_info
+[4.891s] Copying ../../build/control_foxglove/control_foxglove.egg-info to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages/control_foxglove-0.0.0-py3.10.egg-info
+[4.893s] running install_scripts
+[5.087s] Installing control_foxglove script to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/control_foxglove
+[5.087s] writing list of installed files to '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/install.log'
+[5.115s] Invoked command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/control_foxglove' returned '0': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/control_foxglove/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/control_foxglove build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/control_foxglove/install.log --single-version-externally-managed install_data

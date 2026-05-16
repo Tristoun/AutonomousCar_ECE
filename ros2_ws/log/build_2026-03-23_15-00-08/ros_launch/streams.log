@@ -1,0 +1,22 @@
+[1.507s] Invoking command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/ros_launch': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ros_launch build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/install.log --single-version-externally-managed install_data
+[1.757s] running egg_info
+[1.773s] writing ../../build/ros_launch/ros_launch.egg-info/PKG-INFO
+[1.773s] writing dependency_links to ../../build/ros_launch/ros_launch.egg-info/dependency_links.txt
+[1.773s] writing requirements to ../../build/ros_launch/ros_launch.egg-info/requires.txt
+[1.774s] writing top-level names to ../../build/ros_launch/ros_launch.egg-info/top_level.txt
+[4.025s] writing manifest file '../../build/ros_launch/ros_launch.egg-info/SOURCES.txt'
+[4.025s] running build
+[4.025s] running build_py
+[4.025s] copying ros_launch/__init__.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/build/lib/ros_launch
+[4.026s] running install
+[4.032s] running install_lib
+[4.058s] running install_data
+[4.058s] copying resource/ros_launch -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/share/ament_index/resource_index/packages
+[4.058s] copying package.xml -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/share/ros_launch
+[4.058s] copying launch/project.launch.py -> /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/share/ros_launch/launch
+[4.058s] running install_egg_info
+[4.080s] removing '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/lib/python3.10/site-packages/ros_launch-0.0.0-py3.10.egg-info' (and everything under it)
+[4.083s] Copying ../../build/ros_launch/ros_launch.egg-info to /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/lib/python3.10/site-packages/ros_launch-0.0.0-py3.10.egg-info
+[4.083s] running install_scripts
+[4.241s] writing list of installed files to '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/install.log'
+[4.270s] Invoked command in '/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/src/ros_launch' returned '0': PYTHONPATH=/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/ros_launch/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/ros_launch build --build-base /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/build install --record /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/ros_launch/install.log --single-version-externally-managed install_data

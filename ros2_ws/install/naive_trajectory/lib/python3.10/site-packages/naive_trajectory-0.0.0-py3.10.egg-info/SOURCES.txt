@@ -10,6 +10,7 @@ setup.py
 ../../build/naive_trajectory/naive_trajectory.egg-info/zip-safe
 launch/traj.launch.py
 naive_trajectory/__init__.py
+naive_trajectory/backup_traj.py
 naive_trajectory/emulation.py
 naive_trajectory/naive_traj_lidar.py
 naive_trajectory/naive_trajectory.py

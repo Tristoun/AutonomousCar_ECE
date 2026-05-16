@@ -1,0 +1,48 @@
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found geometry_msgs: 4.9.1 (/opt/ros/humble/share/geometry_msgs/cmake)
+-- Found tf2_geometry_msgs: 0.25.20 (/opt/ros/humble/share/tf2_geometry_msgs/cmake)
+-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found nav_msgs: 4.9.1 (/opt/ros/humble/share/nav_msgs/cmake)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/build/rf2o_laser_odometry
+[35m[1mConsolidate compiler generated dependencies of target rf2o_laser_odometry_node[0m
+[35m[1mConsolidate compiler generated dependencies of target rf2o_laser_odometry[0m
+[ 20%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2DNode.cpp.o[0m
+[ 40%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry.dir/src/CLaserOdometry2D.cpp.o[0m
+[ 60%] [32mBuilding CXX object CMakeFiles/rf2o_laser_odometry_node.dir/src/CLaserOdometry2D.cpp.o[0m
+[ 80%] [32m[1mLinking CXX executable rf2o_laser_odometry_node[0m
+[100%] [32m[1mLinking CXX static library librf2o_laser_odometry.a[0m
+[100%] Built target rf2o_laser_odometry
+[100%] Built target rf2o_laser_odometry_node
+-- Install configuration: ""
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/lib/rf2o_laser_odometry/rf2o_laser_odometry_node
+-- Set runtime path of "/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/lib/rf2o_laser_odometry/rf2o_laser_odometry_node" to ""
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/launch
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/launch/rf2o_laser_odometry.launch.py
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/ament_index/resource_index/package_run_dependencies/rf2o_laser_odometry
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/ament_index/resource_index/parent_prefix_path/rf2o_laser_odometry
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/environment/ament_prefix_path.sh
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/environment/ament_prefix_path.dsv
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/environment/path.sh
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/environment/path.dsv
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/local_setup.bash
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/local_setup.sh
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/local_setup.zsh
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/local_setup.dsv
+-- Installing: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/package.dsv
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/ament_index/resource_index/packages/rf2o_laser_odometry
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/cmake/rf2o_laser_odometryConfig.cmake
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/cmake/rf2o_laser_odometryConfig-version.cmake
+-- Up-to-date: /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/rf2o_laser_odometry/share/rf2o_laser_odometry/package.xml

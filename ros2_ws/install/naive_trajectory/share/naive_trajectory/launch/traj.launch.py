@@ -7,7 +7,7 @@ def generate_launch_description():
         Node(
             package='naive_trajectory',
             executable='naive_traj_lidar', # On enlève le .py et on met le nom exact du setup.py
-            name='algo_naif'
+            name='lidar_driver_tour1'
         ),
 
         Node(

@@ -15,7 +15,7 @@ class CorridorStepMaster(Node):
         
         # Seuils
         self.FRONT_DANGER = 0.7
-        self.SIDE_THRESHOLD = 0.5 
+        self.SIDE_THRESHOLD = 0.55 
 
         # Machine à états
         self.STATE_DRIVE = "DRIVE"
@@ -64,8 +64,8 @@ class CorridorStepMaster(Node):
 
         # --- LECTURE CAPTEURS ---
         d_front = self.get_dist(0)
-        d_left  = self.get_dist(55)
-        d_right = self.get_dist(405)
+        d_left  = self.get_dist(60)
+        d_right = self.get_dist(408)
 
         # --- LOGIQUE DE DÉCISION ---
         l_pwm, r_pwm = 0, 0

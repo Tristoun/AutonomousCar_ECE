@@ -1,6 +1,7 @@
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/emulation.py
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/naive_trajectory2.py
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/naive_trajectory.py
+/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/backup_traj.py
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/pure_pursuit.py
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/planner.py
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/python_default.py
@@ -9,6 +10,7 @@
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/emulation.cpython-310.pyc
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/naive_trajectory2.cpython-310.pyc
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/naive_trajectory.cpython-310.pyc
+/home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/backup_traj.cpython-310.pyc
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/pure_pursuit.cpython-310.pyc
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/planner.cpython-310.pyc
 /home/tristan/Documents/autonomous_car_ece/car_control_wave/ros2_ws/install/naive_trajectory/lib/python3.10/site-packages/naive_trajectory/__pycache__/python_default.cpython-310.pyc

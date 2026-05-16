@@ -31,7 +31,7 @@ class LapManager(Node):
         self.start_y = None
         
         # Configuration des seuils
-        self.DIST_PARTIR = 2.0  # Distance min pour valider le départ (m)
+        self.DIST_PARTIR = 1.0  # Distance min pour valider le départ (m)
         self.DIST_ARRIVER = 0.9 # Rayon de la ligne d'arrivée (m)
         
         self.get_logger().info("🏁 Lap Manager prêt. En attente du SLAM...")
@@ -59,40 +59,43 @@ class LapManager(Node):
 
     def check_lap(self):
         try:
-            # Récupération position robot
-            t = self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
+            t = self.tf_buffer.lookup_transform('map', 'laser_link', rclpy.time.Time())
             x = t.transform.translation.x
             y = t.transform.translation.y
-        except:
-            return 
+        except Exception as e:
+            self.get_logger().warn(f"TF indisponible : {e}", throttle_duration_sec=2.0)
+            return
 
-        # 1. Init du point de départ
+        # Init : on attend que le robot ait bougé un minimum avant de fixer le départ
+        # Évite de fixer (0,0) avant que le SLAM ait convergé
         if self.start_x is None:
+            # On ne fixe le départ que si la position semble stabilisée (non nulle)
+            if abs(x) < 0.01 and abs(y) < 0.01:
+                self.get_logger().info("⏳ En attente de position SLAM valide...", 
+                                    throttle_duration_sec=1.0)
+                return
             self.start_x, self.start_y = x, y
             self.get_logger().info(f"📍 Ligne de départ fixée : [{x:.2f}, {y:.2f}]")
             return
 
-        # 2. Calcul distance
-        dist = math.sqrt((x - self.start_x)**2 + (y - self.start_y)**2)
+        dist = math.hypot(x - self.start_x, y - self.start_y)
 
-        # 3. Logique de franchissement
-        # On quitte la zone
+        self.get_logger().info(
+            f"dist={dist:.2f} | has_left={self.has_left_start} | lap={self.lap_count}",
+            throttle_duration_sec=0.5
+        )
+
         if not self.has_left_start and dist > self.DIST_PARTIR:
             self.has_left_start = True
             self.get_logger().info("🚀 Départ validé !")
 
-        # On revient dans la zone (Tour terminé)
         elif self.has_left_start and dist < self.DIST_ARRIVER:
             self.lap_count += 1
-            self.has_left_start = False # Reset pour le prochain tour éventuel
-            
+            self.has_left_start = False
             self.get_logger().info(f"🏆 PASSAGE AU TOUR {self.lap_count} !")
-            
-            # Si on passe au tour 2, on fige le SLAM
             if self.lap_count >= 2:
                 self.trigger_slam_pause()
-        
-        # Publication du tour
+
         self.lap_pub.publish(Int32(data=self.lap_count))
 
 def main():
