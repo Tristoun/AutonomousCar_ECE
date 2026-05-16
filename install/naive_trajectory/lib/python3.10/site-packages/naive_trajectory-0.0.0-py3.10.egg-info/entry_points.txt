@@ -1,4 +1,0 @@
-[console_scripts]
-naive_traj_lidar = naive_trajectory.naive_traj_lidar:main
-planner = naive_trajectory.planner:main
-pure_pursuit = naive_trajectory.pure_pursuit:main

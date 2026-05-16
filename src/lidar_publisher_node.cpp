@@ -19,7 +19,7 @@
 const int MPU_ADDR = 0x68;
 #define WIFI_SSID "Arecetri"
 #define WIFI_PASSWORD "arece1234"
-#define AGENT_IP IPAddress(10, 49, 241, 183) 
+#define AGENT_IP IPAddress(10, 201, 3, 183) 
 #define AGENT_PORT 8888
 #define MAX_POINTS 460 
 
